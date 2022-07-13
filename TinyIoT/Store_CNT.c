@@ -8,66 +8,69 @@
 int display(char* database);
 
 int main() {
-    AE ae1;
-    AE ae2;
-    AE ae3;
-    char* DATABASE = "AE.db";
+    CNT cnt1;
+    CNT cnt2;
+    CNT cnt3;
 
-    //input sample
-    ae1.rn = "Sensor1";
-    ae1.ty = 2;
-    ae1.pi = "5-20191210093452845";
-    ae1.ri = "TAE1";
-    ae1.ct = "20220513T083900";
-    ae1.lt = "20220513T083900";
-    ae1.et = "20240513T083900";
-    ae1.api = "tinyProject1";
-    ae1.rr = true;
-    ae1.aei = "TAE1";
+    //input example
+    cnt1.pi = "TAE1";
+    cnt1.ri = "3-20220513093154147745";
+    cnt1.ty = 3;
+    cnt1.ct = "202205T093154";
+    cnt1.st = 0;
+    cnt1.rn = "status1";
+    cnt1.lt = "20220513T093154";
+    cnt1.et = "20220513T093154";
+    cnt1.cni = 0;
+    cnt1.cbs = 0;
 
-    ae2.rn = "Sensor2";
-    ae2.ty = 2;
-    ae2.pi = "5-20191210093452845";
-    ae2.ri = "TAE2";
-    ae2.ct = "20220513T083900";
-    ae2.lt = "20220513T083900";
-    ae2.et = "20240513T083900";
-    ae2.api = "tinyProject2";
-    ae2.rr = true;
-    ae2.aei = "TAE2";
+    cnt2.pi = "TAE1";
+    cnt2.ri = "3-20210513093154147745";
+    cnt2.ty = 3;
+    cnt2.ct = "202105T093154";
+    cnt2.st = 0;
+    cnt2.rn = "status2";
+    cnt2.lt = "20210513T093154";
+    cnt2.et = "20210513T093154";
+    cnt2.cni = 0;
+    cnt2.cbs = 0;
 
-    ae3.rn = "Sensor3";
-    ae3.ty = 2;
-    ae3.pi = "5-20191210093452845";
-    ae3.ri = "TAE3";
-    ae3.ct = "20220513T083900";
-    ae3.lt = "20220513T083900";
-    ae3.et = "20240513T083900";
-    ae3.api = "tinyProject3";
-    ae3.rr = true;
-    ae3.aei = "TAE3";
+    cnt3.pi = "TAE2";
+    cnt3.ri = "3-20200513093154147745";
+    cnt3.ty = 3;
+    cnt3.ct = "202005T093154";
+    cnt3.st = 0;
+    cnt3.rn = "status3";
+    cnt3.lt = "20200513T093154";
+    cnt3.et = "20200513T093154";
+    cnt3.cni = 0;
+    cnt3.cbs = 0;
 
 
     // [success -> 1] 
-    if (Store_AE(&ae1)) printf("store success!\n");
-    if (Store_AE(&ae3)) printf("store success!\n");
-    if (Store_AE(&ae2)) printf("store success!\n");
-
+    if (Store_CNT(&cnt1)) printf("store success!\n");
+    if (Store_CNT(&cnt2)) printf("store success!\n");
+    if (Store_CNT(&cnt3)) printf("store success!\n");
 
     // print
+    char* DATABASE = "CNT.db";
     display(DATABASE);
 
     return 0;
 }
 
-int Store_AE(AE* ae_object) {
-    char* DATABASE = "AE.db";
+int Store_CNT(CNT *cnt_object)
+{
+    char* DATABASE = "CNT.db";
+
     DB* dbp;    // db handle
     DBC* dbcp;
     FILE* error_file_pointer;
-    DBT key_ct, key_lt, key_rn, key_ri, key_pi, key_ty, key_et, key_api, key_rr,key_aei;
-    DBT data_ct, data_lt, data_rn, data_ri, data_pi, data_ty, data_et, data_api, data_rr, data_aei;  // storving key and real data
+    DBT key, data;  // storving key and real data
     int ret;        // template value
+
+    DBT key_ct, key_lt, key_rn, key_ri, key_pi, key_ty, key_et, key_cni, key_cbs, key_st;
+    DBT data_ct, data_lt, data_rn, data_ri, data_pi, data_ty, data_et, data_cni, data_cbs, data_st;  // storving key and real data
 
     char* program_name = "my_prog";
 
@@ -80,9 +83,9 @@ int Store_AE(AE* ae_object) {
     if (cin_object->lt == NULL) cin_object->lt = "";
     if (cin_object->et == NULL) cin_object->et = "";
 
-    if (cin_object->rr == NULL) cin_object->rr = true;
-    if (cin_object->api == NULL) cin_object->api = "";
-    if (cin_object->aei == NULL) cin_object->aei = "";
+    if (cin_object->cni == '\0') cin_object->cni = -1;
+    if (cin_object->cbs == '\0') cin_object->cbs = -1;
+    if (cin_object->st == '\0') cin_object->st = -1;
 
     ret = db_create(&dbp, NULL, 0);
     if (ret) {
@@ -110,117 +113,117 @@ int Store_AE(AE* ae_object) {
         printf("DB Open ERROR\n");
         exit(1);
     }
-    
+
     /*
-* The DB handle for a Btree database supporting duplicate data
-* items is the argument; acquire a cursor for the database.
-*/
+  * The DB handle for a Btree database supporting duplicate data
+  * items is the argument; acquire a cursor for the database.
+  */
     if ((ret = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
         printf("Cursor ERROR");
         exit(1);
     }
-
+ 
     /* keyand data must initialize */
+    memset(&key_ct, 0, sizeof(DBT));
+    memset(&key_lt, 0, sizeof(DBT));
     memset(&key_rn, 0, sizeof(DBT));
     memset(&key_ri, 0, sizeof(DBT));
     memset(&key_pi, 0, sizeof(DBT));
     memset(&key_ty, 0, sizeof(DBT));
-    memset(&key_ct, 0, sizeof(DBT));
-    memset(&key_lt, 0, sizeof(DBT));
     memset(&key_et, 0, sizeof(DBT));
-    memset(&key_api, 0, sizeof(DBT));
-    memset(&key_rr, 0, sizeof(DBT));
-    memset(&key_aei, 0, sizeof(DBT));
+    memset(&key_cni, 0, sizeof(DBT));
+    memset(&key_cbs, 0, sizeof(DBT));
+    memset(&key_st, 0, sizeof(DBT));
 
+    memset(&data_ct, 0, sizeof(DBT));
+    memset(&data_lt, 0, sizeof(DBT));
     memset(&data_rn, 0, sizeof(DBT));
     memset(&data_ri, 0, sizeof(DBT));
     memset(&data_pi, 0, sizeof(DBT));
     memset(&data_ty, 0, sizeof(DBT));
-    memset(&data_ct, 0, sizeof(DBT));
-    memset(&data_lt, 0, sizeof(DBT));
     memset(&data_et, 0, sizeof(DBT));
-    memset(&data_api, 0, sizeof(DBT));
-    memset(&data_rr, 0, sizeof(DBT));
-    memset(&data_aei, 0, sizeof(DBT));
-    
-    // Store key & data
-    data_rn.data = ae_object->rn;
-    data_rn.size = strlen(ae_object->rn) + 1;
+    memset(&data_cni, 0, sizeof(DBT));
+    memset(&data_cbs, 0, sizeof(DBT));
+    memset(&data_st, 0, sizeof(DBT));
+
+
+    /* initialize the data to be the first of two duplicate records. */
+    data_rn.data = cnt_object->rn;
+    data_rn.size = strlen(cnt_object->rn) + 1;
     key_rn.data = "rn";
     key_rn.size = strlen("rn") + 1;
 
-    data_ri.data = ae_object->ri;
-    data_ri.size = strlen(ae_object->ri) + 1;
+    data_ri.data = cnt_object->ri;
+    data_ri.size = strlen(cnt_object->ri) + 1;
     key_ri.data = "ri";
     key_ri.size = strlen("ri") + 1;
 
-    data_pi.data = ae_object->pi;
-    data_pi.size = strlen(ae_object->pi) + 1;
+    data_pi.data = cnt_object->pi;
+    data_pi.size = strlen(cnt_object->pi) + 1;
     key_pi.data = "pi";
     key_pi.size = strlen("pi") + 1;
 
-    data_ty.data = &ae_object->ty;
-    data_ty.size = sizeof(ae_object->ty);
-    key_ty.data = "ty";
-    key_ty.size = strlen("ty") + 1;
-
-    data_ct.data = ae_object->ct;
-    data_ct.size = strlen(ae_object->ct) + 1;
+    data_ct.data = cnt_object->ct;
+    data_ct.size = strlen(cnt_object->ct) + 1;
     key_ct.data = "ct";
     key_ct.size = strlen("ct") + 1;
 
-    data_lt.data = ae_object->lt;
-    data_lt.size = strlen(ae_object->lt) + 1;
+    data_lt.data = cnt_object->lt;
+    data_lt.size = strlen(cnt_object->lt) + 1;
     key_lt.data = "lt";
     key_lt.size = strlen("lt") + 1;
 
-    data_et.data = ae_object->et;
-    data_et.size = strlen(ae_object->et) + 1;
+    data_et.data = cnt_object->et;
+    data_et.size = strlen(cnt_object->et) + 1;
     key_et.data = "et";
     key_et.size = strlen("et") + 1;
 
-    data_api.data = ae_object->api;
-    data_api.size = strlen(ae_object->api) + 1;
-    key_api.data = "api";
-    key_api.size = strlen("api") + 1;
+    data_ty.data = &cnt_object->ty;
+    data_ty.size = sizeof(cnt_object->ty);
+    key_ty.data = "ty";
+    key_ty.size = strlen("ty") + 1;
 
-    data_rr.data = &ae_object->rr;
-    data_rr.size = sizeof(ae_object->rr);
-    key_rr.data = "rr";
-    key_rr.size = strlen("rr") + 1;
+    data_st.data = &cnt_object->st;
+    data_st.size = sizeof(cnt_object->st);
+    key_st.data = "st";
+    key_st.size = strlen("st") + 1;
 
-    data_aei.data = ae_object->aei;
-    data_aei.size = strlen(ae_object->aei) + 1;
-    key_aei.data = "aei";
-    key_aei.size = strlen("aei") + 1;
- 
+    data_cni.data = &cnt_object->cni;
+    data_cni.size = sizeof(cnt_object->cni);
+    key_cni.data = "cni";
+    key_cni.size = strlen("cni") + 1;
 
+    data_cbs.data = &cnt_object->cbs;
+    data_cbs.size = sizeof(cnt_object->cbs);
+    key_cbs.data = "cbs";
+    key_cbs.size = strlen("cbs") + 1;
+
+    /* CNT -> only one & first */
     if ((ret = dbcp->put(dbcp, &key_ri, &data_ri, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "DB->cursor");
+        dbp->err(dbp, ret, "db->cursor");
     if ((ret = dbcp->put(dbcp, &key_rn, &data_rn, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "DB->cursor");
+        dbp->err(dbp, ret, "db->cursor");
     if ((ret = dbcp->put(dbcp, &key_pi, &data_pi, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "DB->cursor");
+        dbp->err(dbp, ret, "db->cursor");
     if ((ret = dbcp->put(dbcp, &key_ty, &data_ty, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "DB->cursor");
-    if ((ret = dbcp->put(dbcp, &key_ct, &data_ct, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "DB->cursor");
-    if ((ret = dbcp->put(dbcp, &key_lt, &data_lt, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "DB->cursor");
-    if ((ret = dbcp->put(dbcp, &key_et, &data_et, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "DB->cursor");
-    if ((ret = dbcp->put(dbcp, &key_api, &data_api, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "DB->cursor");
-    if ((ret = dbcp->put(dbcp, &key_rr, &data_rr, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "DB->cursor");
-    if ((ret = dbcp->put(dbcp, &key_aei, &data_aei, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "DB->cursor");
+        dbp->err(dbp, ret, "db->cursor");
 
+    if ((ret = dbcp->put(dbcp, &key_ct, &data_ct, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_lt, &data_lt, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_cni, &data_cni, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_st, &data_st, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_et, &data_et, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_cbs, &data_cbs, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
 
     dbcp->close(dbcp);
     dbp->close(dbp, 0); //DB close
-
     return 1;
 }
 
@@ -266,8 +269,7 @@ int display(char* database)
     memset(&data, 0, sizeof(data));
 
     /* Walk through the database and print out the key/data pairs. */
-    while ((ret = dbcp->get(dbcp, &key, &data, DB_NEXT)) == 0) {
-        //int
+    while ((ret = dbcp->get(dbcp, &key, &data, DB_NEXT)) == 0){
         if (strncmp(key.data, "ty", key.size) == 0 ||
             strncmp(key.data, "st", key.size) == 0 ||
             strncmp(key.data, "cni", key.size) == 0 ||
@@ -276,7 +278,6 @@ int display(char* database)
             ) {
             printf("%.*s : %d\n", (int)key.size, (char*)key.data, *(int*)data.data);
         }
-        //bool
         else if (strncmp(key.data, "rr", key.size) == 0) {
             printf("%.*s : ", (int)key.size, (char*)key.data);
             if (*(bool*)data.data == true)
@@ -284,8 +285,6 @@ int display(char* database)
             else
                 printf("false\n");
         }
-
-        //string
         else {
             printf("%.*s : %.*s\n",
                 (int)key.size, (char*)key.data,

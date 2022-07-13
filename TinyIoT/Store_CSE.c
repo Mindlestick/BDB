@@ -5,7 +5,6 @@
 #include <db.h>
 #include "onem2m.h"
 
-//#define DATABASE "CSE_DUP_1.db"
 int display(char* database);
 
 int main() {
@@ -26,7 +25,7 @@ int main() {
     if(Store_CSE(&cse)) printf("store success!\n");
 
     // print
-    char* DATABASE = "CSE_DUP_2.db";
+    char* DATABASE = "CSE.db";
     display(DATABASE);
 
     return 0;
@@ -34,7 +33,7 @@ int main() {
 
 int Store_CSE(CSE *cse_object)
 {
-    char* DATABASE = "CSE_DUP_2.db";
+    char* DATABASE = "CSE.db";
 
     DB* dbp;    // db handle
     DBC* dbcp;
@@ -46,6 +45,16 @@ int Store_CSE(CSE *cse_object)
     DBT data_ct, data_lt, data_rn, data_ri, data_pi, data_csi, data_ty;  // storving key and real data
 
     char* program_name = "my_prog";
+
+    // if input == NULL
+    if (cin_object->ri == NULL) cin_object->ri = "";
+    if (cin_object->rn == NULL) cin_object->rn = "";
+    if (cin_object->pi == NULL) cin_object->pi = "NULL";
+    if (cin_object->ty == '\0') cin_object->ty = -1;
+    if (cin_object->ct == NULL) cin_object->ct = "";
+    if (cin_object->lt == NULL) cin_object->lt = "";
+    if (cin_object->csi == NULL) cin_object->csi = "";
+
 
     ret = db_create(&dbp, NULL, 0);
     if (ret) {

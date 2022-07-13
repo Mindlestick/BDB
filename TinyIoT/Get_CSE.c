@@ -18,7 +18,7 @@ CSE* Get_CSE(char* ri) {
     //store CSE Object
     CSE* new_cse = (CSE*)malloc(sizeof(CSE));
 
-    char* database = "CSE_DUP_2.db";
+    char* database = "CSE.db";
 
     DB* dbp;
     DBC* dbcp;

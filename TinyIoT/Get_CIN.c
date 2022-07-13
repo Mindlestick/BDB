@@ -8,23 +8,20 @@
 int display(char* database);
 
 int main() {
-    AE *ae = Get_AE("TAE3");
-    printf("ri : %s\nrn : %s\npi : %s\net : %s\naei : %s\napi : %s\nct : %s\nlt : %s\n", ae->ri, ae->rn, ae->pi, ae->et, ae->aei,
-        ae->api, ae->ct, ae->lt);
-    if (ae->rr == 1) {
-        printf("rr : true\n");
-    }
-    printf("ty : %d\n",ae->ty);
+    CIN *cin = Get_CIN("4-20220513093154147745");
+    printf("ri : %s\nrn : %s\npi : %s\net : %s\nct : %s\nlt : %s\ncon : %s\ncsi : %s\n", cin->ri, cin->rn, cin->pi, cin->et, cin->ct,
+        cin->lt, cin->con, cin->csi);
+    printf("ty : %d\nst : %d\ncs : %d\n",cin->ty, cin->st, cin->cs);
     return 0;
 }
 
-AE* Get_AE(char* ri) {
-    printf("[Get AE] ri = %s\n", ri);
+CIN* Get_CIN(char* ri) {
+    printf("[Get CIN] ri = %s\n", ri);
 
-    //store AE
-    AE* new_ae = (AE*)malloc(sizeof(AE));
+    //store CIN
+    CIN* new_cin = (CIN*)malloc(sizeof(CIN));
 
-    char* database = "AE.db";
+    char* database = "CIN.db";
 
     DB* dbp;
     DBC* dbcp;
@@ -64,7 +61,7 @@ AE* Get_AE(char* ri) {
     memset(&data, 0, sizeof(data));
 
     int idx = 0;
-    // 몇번째 AE인지 찾기 위한 커서
+    // 몇번째 CIN인지 찾기 위한 커서
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
@@ -75,82 +72,91 @@ AE* Get_AE(char* ri) {
         if (strncmp(key.data, "ri", key.size) == 0) {
             idx++;
             if (strncmp(data.data, ri, data.size) == 0) {
-                new_ae->ri = malloc(data.size);
-                strcpy(new_ae->ri, data.data);
+                new_cin->ri = malloc(data.size);
+                strcpy(new_cin->ri, data.data);
                 break;
             }
         }
     }
 
-    int cnt_rn = 0;
-    int cnt_pi = 0;
-    int cnt_ty = 0;
-    int cnt_et = 0;
-    int cnt_lt = 0;
-    int cnt_ct = 0;
-    int cnt_api = 0;
-    int cnt_aei = 0;
-    int cnt_rr = 0;
+    int cin_rn = 0;
+    int cin_pi = 0;
+    int cin_ty = 0;
+    int cin_et = 0;
+    int cin_lt = 0;
+    int cin_ct = 0;
+    int cin_st = 0;
+    int cin_cs = 0;
+    int cin_con = 0;
+    int cin_csi = 0;
+
     while ((ret = dbcp->get(dbcp, &key, &data, DB_NEXT)) == 0) {
         if (strncmp(key.data, "rn", key.size) == 0) {
-            cnt_rn++;
-            if (cnt_rn == idx) {
-                new_ae->rn = malloc(data.size);
-                strcpy(new_ae->rn, data.data);
+            cin_rn++;
+            if (cin_rn == idx) {
+                new_cin->rn = malloc(data.size);
+                strcpy(new_cin->rn, data.data);
             }
         }
         if (strncmp(key.data, "pi", key.size) == 0) {
-            cnt_pi++;
-            if (cnt_pi == idx) {
-                new_ae->pi = malloc(data.size);
-                strcpy(new_ae->pi, data.data);
-            }
-        }
-        if (strncmp(key.data, "api", key.size) == 0) {
-            cnt_api++;
-            if (cnt_api == idx) {
-                new_ae->api = malloc(data.size);
-                strcpy(new_ae->api, data.data);
-            }
-        }
-        if (strncmp(key.data, "aei", key.size) == 0) {
-            cnt_aei++;
-            if (cnt_aei == idx) {
-                new_ae->aei = malloc(data.size);
-                strcpy(new_ae->aei, data.data);
+            cin_pi++;
+            if (cin_pi == idx) {
+                new_cin->pi = malloc(data.size);
+                strcpy(new_cin->pi, data.data);
             }
         }
         if (strncmp(key.data, "et", key.size) == 0) {
-            cnt_et++;
-            if (cnt_et == idx) {
-                new_ae->et = malloc(data.size);
-                strcpy(new_ae->et, data.data);
+            cin_et++;
+            if (cin_et == idx) {
+                new_cin->et = malloc(data.size);
+                strcpy(new_cin->et, data.data);
             }
         }
         if (strncmp(key.data, "lt", key.size) == 0) {
-            cnt_lt++;
-            if (cnt_lt == idx) {
-                new_ae->lt = malloc(data.size);
-                strcpy(new_ae->lt, data.data);
+            cin_lt++;
+            if (cin_lt == idx) {
+                new_cin->lt = malloc(data.size);
+                strcpy(new_cin->lt, data.data);
             }
         }
         if (strncmp(key.data, "ct", key.size) == 0) {
-            cnt_ct++;
-            if (cnt_ct == idx) {
-                new_ae->ct = malloc(data.size);
-                strcpy(new_ae->ct, data.data);
+            cin_ct++;
+            if (cin_ct == idx) {
+                new_cin->ct = malloc(data.size);
+                strcpy(new_cin->ct, data.data);
             }
         }
+        if (strncmp(key.data, "con", key.size) == 0) {
+            cin_con++;
+            if (cin_con == idx) {
+                new_cin->con = malloc(data.size);
+                strcpy(new_cin->con, data.data);
+            }
+        }
+        if (strncmp(key.data, "csi", key.size) == 0) {
+            cin_csi++;
+            if (cin_csi == idx) {
+                new_cin->csi = malloc(data.size);
+                strcpy(new_cin->csi, data.data);
+            }
+        }
+
         if (strncmp(key.data, "ty", key.size) == 0) {
-            cnt_ty++;
-            if (cnt_ty == idx) {
-                new_ae->ty = *(int*)data.data;
+            cin_ty++;
+            if (cin_ty == idx) {
+                new_cin->ty = *(int*)data.data;
             }
         }
-        if (strncmp(key.data, "rr", key.size) == 0) {
-            cnt_rr++;
-            if (cnt_rr == idx) {
-                new_ae->rr = *(bool*)data.data;
+        if (strncmp(key.data, "st", key.size) == 0) {
+            cin_st++;
+            if (cin_st == idx) {
+                new_cin->st = *(int*)data.data;
+            }
+        }
+        if (strncmp(key.data, "cs", key.size) == 0) {
+            cin_cs++;
+            if (cin_cs == idx) {
+                new_cin->cs = *(int*)data.data;
             }
         }
     }
@@ -167,7 +173,7 @@ dbp->err(dbp, ret, "DBcursor->close");
 if (close_db && (ret = dbp->close(dbp, 0)) != 0)
 fprintf(stderr,
     "%s: DB->close: %s\n", database, db_strerror(ret));
-return new_ae;
+return new_cin;
 }
 
 int display(char* database)

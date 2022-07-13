@@ -8,23 +8,20 @@
 int display(char* database);
 
 int main() {
-    AE *ae = Get_AE("TAE3");
-    printf("ri : %s\nrn : %s\npi : %s\net : %s\naei : %s\napi : %s\nct : %s\nlt : %s\n", ae->ri, ae->rn, ae->pi, ae->et, ae->aei,
-        ae->api, ae->ct, ae->lt);
-    if (ae->rr == 1) {
-        printf("rr : true\n");
-    }
-    printf("ty : %d\n",ae->ty);
+    CNT *cnt = Get_CNT("3-20220513093154147745");
+    printf("ri : %s\nrn : %s\npi : %s\net : %s\nct : %s\nlt : %s\n", cnt->ri, cnt->rn, cnt->pi, cnt->et, cnt->ct,
+        cnt->lt);
+    printf("ty : %d\nst : %d\ncnt : %d\ncbs : %d\n",cnt->ty, cnt->st, cnt->cni, cnt->cbs);
     return 0;
 }
 
-AE* Get_AE(char* ri) {
-    printf("[Get AE] ri = %s\n", ri);
+CNT* Get_CNT(char* ri) {
+    printf("[Get CNT] ri = %s\n", ri);
 
-    //store AE
-    AE* new_ae = (AE*)malloc(sizeof(AE));
+    //store CNT
+    CNT* new_cnt = (CNT*)malloc(sizeof(CNT));
 
-    char* database = "AE.db";
+    char* database = "CNT.db";
 
     DB* dbp;
     DBC* dbcp;
@@ -64,7 +61,7 @@ AE* Get_AE(char* ri) {
     memset(&data, 0, sizeof(data));
 
     int idx = 0;
-    // 몇번째 AE인지 찾기 위한 커서
+    // 몇번째 CNT인지 찾기 위한 커서
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
@@ -75,8 +72,8 @@ AE* Get_AE(char* ri) {
         if (strncmp(key.data, "ri", key.size) == 0) {
             idx++;
             if (strncmp(data.data, ri, data.size) == 0) {
-                new_ae->ri = malloc(data.size);
-                strcpy(new_ae->ri, data.data);
+                new_cnt->ri = malloc(data.size);
+                strcpy(new_cnt->ri, data.data);
                 break;
             }
         }
@@ -88,69 +85,68 @@ AE* Get_AE(char* ri) {
     int cnt_et = 0;
     int cnt_lt = 0;
     int cnt_ct = 0;
-    int cnt_api = 0;
-    int cnt_aei = 0;
-    int cnt_rr = 0;
+    int cnt_st = 0;
+    int cnt_cni = 0;
+    int cnt_cbs = 0;
+
     while ((ret = dbcp->get(dbcp, &key, &data, DB_NEXT)) == 0) {
         if (strncmp(key.data, "rn", key.size) == 0) {
             cnt_rn++;
             if (cnt_rn == idx) {
-                new_ae->rn = malloc(data.size);
-                strcpy(new_ae->rn, data.data);
+                new_cnt->rn = malloc(data.size);
+                strcpy(new_cnt->rn, data.data);
             }
         }
         if (strncmp(key.data, "pi", key.size) == 0) {
             cnt_pi++;
             if (cnt_pi == idx) {
-                new_ae->pi = malloc(data.size);
-                strcpy(new_ae->pi, data.data);
-            }
-        }
-        if (strncmp(key.data, "api", key.size) == 0) {
-            cnt_api++;
-            if (cnt_api == idx) {
-                new_ae->api = malloc(data.size);
-                strcpy(new_ae->api, data.data);
-            }
-        }
-        if (strncmp(key.data, "aei", key.size) == 0) {
-            cnt_aei++;
-            if (cnt_aei == idx) {
-                new_ae->aei = malloc(data.size);
-                strcpy(new_ae->aei, data.data);
+                new_cnt->pi = malloc(data.size);
+                strcpy(new_cnt->pi, data.data);
             }
         }
         if (strncmp(key.data, "et", key.size) == 0) {
             cnt_et++;
             if (cnt_et == idx) {
-                new_ae->et = malloc(data.size);
-                strcpy(new_ae->et, data.data);
+                new_cnt->et = malloc(data.size);
+                strcpy(new_cnt->et, data.data);
             }
         }
         if (strncmp(key.data, "lt", key.size) == 0) {
             cnt_lt++;
             if (cnt_lt == idx) {
-                new_ae->lt = malloc(data.size);
-                strcpy(new_ae->lt, data.data);
+                new_cnt->lt = malloc(data.size);
+                strcpy(new_cnt->lt, data.data);
             }
         }
         if (strncmp(key.data, "ct", key.size) == 0) {
             cnt_ct++;
             if (cnt_ct == idx) {
-                new_ae->ct = malloc(data.size);
-                strcpy(new_ae->ct, data.data);
+                new_cnt->ct = malloc(data.size);
+                strcpy(new_cnt->ct, data.data);
             }
         }
         if (strncmp(key.data, "ty", key.size) == 0) {
             cnt_ty++;
             if (cnt_ty == idx) {
-                new_ae->ty = *(int*)data.data;
+                new_cnt->ty = *(int*)data.data;
             }
         }
-        if (strncmp(key.data, "rr", key.size) == 0) {
-            cnt_rr++;
-            if (cnt_rr == idx) {
-                new_ae->rr = *(bool*)data.data;
+        if (strncmp(key.data, "st", key.size) == 0) {
+            cnt_st++;
+            if (cnt_st == idx) {
+                new_cnt->st = *(int*)data.data;
+            }
+        }
+        if (strncmp(key.data, "cni", key.size) == 0) {
+            cnt_cni++;
+            if (cnt_cni == idx) {
+                new_cnt->cni = *(int*)data.data;
+            }
+        }
+        if (strncmp(key.data, "cbs", key.size) == 0) {
+            cnt_cbs++;
+            if (cnt_cbs == idx) {
+                new_cnt->cbs = *(int*)data.data;
             }
         }
     }
@@ -167,7 +163,7 @@ dbp->err(dbp, ret, "DBcursor->close");
 if (close_db && (ret = dbp->close(dbp, 0)) != 0)
 fprintf(stderr,
     "%s: DB->close: %s\n", database, db_strerror(ret));
-return new_ae;
+return new_cnt;
 }
 
 int display(char* database)
