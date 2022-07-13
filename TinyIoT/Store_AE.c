@@ -72,17 +72,17 @@ int Store_AE(AE* ae_object) {
     char* program_name = "my_prog";
 
     // if input == NULL
-    if (cin_object->ri == NULL) cin_object->ri = "";
-    if (cin_object->rn == NULL) cin_object->rn = "";
-    if (cin_object->pi == NULL) cin_object->pi = "";
-    if (cin_object->ty == '\0') cin_object->ty = -1;
-    if (cin_object->ct == NULL) cin_object->ct = "";
-    if (cin_object->lt == NULL) cin_object->lt = "";
-    if (cin_object->et == NULL) cin_object->et = "";
+    if (ae_object->ri == NULL) ae_object->ri = "";
+    if (ae_object->rn == NULL) ae_object->rn = "";
+    if (ae_object->pi == NULL) ae_object->pi = "";
+    if (ae_object->ty == '\0') ae_object->ty = -1;
+    if (ae_object->ct == NULL) ae_object->ct = "";
+    if (ae_object->lt == NULL) ae_object->lt = "";
+    if (ae_object->et == NULL) ae_object->et = "";
 
-    if (cin_object->rr == NULL) cin_object->rr = true;
-    if (cin_object->api == NULL) cin_object->api = "";
-    if (cin_object->aei == NULL) cin_object->aei = "";
+    if (ae_object->rr == NULL) ae_object->rr = true;
+    if (ae_object->api == NULL) ae_object->api = "";
+    if (ae_object->aei == NULL) ae_object->aei = "";
 
     ret = db_create(&dbp, NULL, 0);
     if (ret) {

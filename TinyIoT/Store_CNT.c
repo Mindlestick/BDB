@@ -75,17 +75,17 @@ int Store_CNT(CNT *cnt_object)
     char* program_name = "my_prog";
 
     // if input == NULL
-    if (cin_object->ri == NULL) cin_object->ri = "";
-    if (cin_object->rn == NULL) cin_object->rn = "";
-    if (cin_object->pi == NULL) cin_object->pi = "";
-    if (cin_object->ty == '\0') cin_object->ty = -1;
-    if (cin_object->ct == NULL) cin_object->ct = "";
-    if (cin_object->lt == NULL) cin_object->lt = "";
-    if (cin_object->et == NULL) cin_object->et = "";
+    if (cnt_object->ri == NULL) cnt_object->ri = "";
+    if (cnt_object->rn == NULL) cnt_object->rn = "";
+    if (cnt_object->pi == NULL) cnt_object->pi = "";
+    if (cnt_object->ty == '\0') cnt_object->ty = -1;
+    if (cnt_object->ct == NULL) cnt_object->ct = "";
+    if (cnt_object->lt == NULL) cnt_object->lt = "";
+    if (cnt_object->et == NULL) cnt_object->et = "";
 
-    if (cin_object->cni == '\0') cin_object->cni = -1;
-    if (cin_object->cbs == '\0') cin_object->cbs = -1;
-    if (cin_object->st == '\0') cin_object->st = -1;
+    if (cnt_object->cni == '\0') cnt_object->cni = -1;
+    if (cnt_object->cbs == '\0') cnt_object->cbs = -1;
+    if (cnt_object->st == '\0') cnt_object->st = -1;
 
     ret = db_create(&dbp, NULL, 0);
     if (ret) {

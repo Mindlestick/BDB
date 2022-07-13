@@ -47,14 +47,13 @@ int Store_CSE(CSE *cse_object)
     char* program_name = "my_prog";
 
     // if input == NULL
-    if (cin_object->ri == NULL) cin_object->ri = "";
-    if (cin_object->rn == NULL) cin_object->rn = "";
-    if (cin_object->pi == NULL) cin_object->pi = "NULL";
-    if (cin_object->ty == '\0') cin_object->ty = -1;
-    if (cin_object->ct == NULL) cin_object->ct = "";
-    if (cin_object->lt == NULL) cin_object->lt = "";
-    if (cin_object->csi == NULL) cin_object->csi = "";
-
+    if (cse_object->ri == NULL) cse_object->ri = "";
+    if (cse_object->rn == NULL) cse_object->rn = "";
+    if (cse_object->pi == NULL) cse_object->pi = "NULL";
+    if (cse_object->ty == '\0') cse_object->ty = -1;
+    if (cse_object->ct == NULL) cse_object->ct = "";
+    if (cse_object->lt == NULL) cse_object->lt = "";
+    if (cse_object->csi == NULL) cse_object->csi = "";
 
     ret = db_create(&dbp, NULL, 0);
     if (ret) {
