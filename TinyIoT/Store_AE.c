@@ -80,7 +80,7 @@ int Store_AE(AE* ae_object) {
     if (ae_object->lt == NULL) ae_object->lt = "";
     if (ae_object->et == NULL) ae_object->et = "";
 
-    if (ae_object->rr == NULL) ae_object->rr = true;
+    if (ae_object->rr == '\0') ae_object->rr = true;
     if (ae_object->api == NULL) ae_object->api = "";
     if (ae_object->aei == NULL) ae_object->aei = "";
 

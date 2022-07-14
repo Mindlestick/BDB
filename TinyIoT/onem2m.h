@@ -85,7 +85,7 @@ AE* Update_AE(char* json_payload);
 CNT* Update_CNT(char* json_payload);
 
 CSE* Delete_CSE();
-AE* Delete_AE();
+AE* Delete_AE(char* ri);
 CNT* Delete_CNT();
 CIN* Delete_CIN();
 
