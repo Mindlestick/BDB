@@ -77,6 +77,7 @@ AE* Delete_AE(char* ri) {
     }
     if (flag == 0) {
         printf("Not Found\n");
+        return NULL;
         exit(1);
     }
 

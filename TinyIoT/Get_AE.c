@@ -9,12 +9,18 @@ int display(char* database);
 
 int main() {
     AE *ae = Get_AE("TAE3");
-    printf("ri : %s\nrn : %s\npi : %s\net : %s\naei : %s\napi : %s\nct : %s\nlt : %s\n", ae->ri, ae->rn, ae->pi, ae->et, ae->aei,
-        ae->api, ae->ct, ae->lt);
-    if (ae->rr == 1) {
-        printf("rr : true\n");
+    if (ae == NULL) {
+        printf("Return NULL\n");
+        return -1;
     }
-    printf("ty : %d\n",ae->ty);
+    else {
+        printf("ri : %s\nrn : %s\npi : %s\net : %s\naei : %s\napi : %s\nct : %s\nlt : %s\n", ae->ri, ae->rn, ae->pi, ae->et, ae->aei,
+            ae->api, ae->ct, ae->lt);
+        if (ae->rr == 1) {
+            printf("rr : true\n");
+        }
+        printf("ty : %d\n", ae->ty);
+    }
     return 0;
 }
 
@@ -29,9 +35,7 @@ AE* Get_AE(char* ri) {
     DB* dbp;
     DBC* dbcp;
     DBT key, data;
-    int close_db, close_dbc, ret;
-
-    close_db = close_dbc = 0;
+    int ret;
 
     /* Open the database. */
     if ((ret = db_create(&dbp, NULL, 0)) != 0) {
@@ -39,47 +43,47 @@ AE* Get_AE(char* ri) {
             "%s: db_create: %s\n", database, db_strerror(ret));
         return 0;
     }
-    close_db = 1;
-
-    /* Turn on additional error output. */
-    dbp->set_errfile(dbp, stderr);
-    dbp->set_errpfx(dbp, database);
 
     /* Open the database. */
-    if ((ret = dbp->open(dbp, NULL, database, NULL,
-        DB_UNKNOWN, DB_RDONLY, 0)) != 0) {
-        dbp->err(dbp, ret, "%s: DB->open", database);
-        goto err;
+    ret = dbp->open(dbp, NULL, database, NULL, DB_BTREE, DB_CREATE, 0664);
+    if (ret) {
+        dbp->err(dbp, ret, "%s", database);
+        exit(1);
     }
 
     /* Acquire a cursor for the database. */
     if ((ret = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
-        goto err;
+        exit(1);
     }
-    close_dbc = 1;
 
     /* Initialize the key/data return pair. */
     memset(&key, 0, sizeof(key));
     memset(&data, 0, sizeof(data));
 
     int idx = 0;
+    int flag = 0;
     // 몇번째 AE인지 찾기 위한 커서
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
-        goto err;
+        exit(1);
     }
-    close_dbc = 1;
     while ((ret = dbcp0->get(dbcp0, &key, &data, DB_NEXT)) == 0) {
         if (strncmp(key.data, "ri", key.size) == 0) {
             idx++;
             if (strncmp(data.data, ri, data.size) == 0) {
+                flag = 1;
                 new_ae->ri = malloc(data.size);
                 strcpy(new_ae->ri, data.data);
                 break;
             }
         }
+    }
+    if (flag == 0) {
+        printf("Not Found\n");
+        return NULL;
+        //exit(1);
     }
 
     int cnt_rn = 0;
@@ -162,12 +166,7 @@ AE* Get_AE(char* ri) {
         exit(0);
     }
 
-err:    if (close_dbc && (ret = dbcp->close(dbcp)) != 0)
-dbp->err(dbp, ret, "DBcursor->close");
-if (close_db && (ret = dbp->close(dbp, 0)) != 0)
-fprintf(stderr,
-    "%s: DB->close: %s\n", database, db_strerror(ret));
-return new_ae;
+    return new_ae;
 }
 
 int display(char* database)
