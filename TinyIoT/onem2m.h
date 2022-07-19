@@ -109,5 +109,5 @@ AE* Get_AE(char* ri);
 CNT* Get_CNT(char* ri);
 CIN* Get_CIN(char* ri);
 
-AE* Get_All_AE();
+AE** Get_All_AE();
 
