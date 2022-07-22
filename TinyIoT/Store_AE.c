@@ -49,9 +49,9 @@ int main() {
 
 
     // [success -> 1] 
-    if (Store_AE(&ae1)) printf("store success!\n");
-    if (Store_AE(&ae3)) printf("store success!\n");
-    if (Store_AE(&ae2)) printf("store success!\n");
+    if (Store_AE(&ae1)) fprintf(stderr, "store success!\n");
+    if (Store_AE(&ae3)) fprintf(stderr, "store success!\n");
+    if (Store_AE(&ae2)) fprintf(stderr, "store success!\n");
 
 
     // print
@@ -87,7 +87,7 @@ int Store_AE(AE* ae_object) {
     ret = db_create(&dbp, NULL, 0);
     if (ret) {
         fprintf(stderr, "db_create : %s\n", db_strerror(ret));
-        printf("File ERROR\n");
+        fprintf(stderr, "File ERROR\n");
         exit(1);
     }
 
@@ -98,7 +98,7 @@ int Store_AE(AE* ae_object) {
     ret = dbp->set_flags(dbp, DB_DUP);
     if (ret != 0) {
         dbp->err(dbp, ret, "Attempt to set DUPSORT flag failed.");
-        printf("Flag Set ERROR\n");
+        fprintf(stderr, "Flag Set ERROR\n");
         dbp->close(dbp, 0);
         return(ret);
     }
@@ -107,7 +107,7 @@ int Store_AE(AE* ae_object) {
     ret = dbp->open(dbp, NULL, DATABASE, NULL, DB_BTREE, DB_CREATE, 0664);
     if (ret) {
         dbp->err(dbp, ret, "%s", DATABASE);
-        printf("DB Open ERROR\n");
+        fprintf(stderr, "DB Open ERROR\n");
         exit(1);
     }
     
@@ -117,7 +117,7 @@ int Store_AE(AE* ae_object) {
 */
     if ((ret = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
-        printf("Cursor ERROR");
+        fprintf(stderr, "Cursor ERROR");
         exit(1);
     }
 
@@ -274,15 +274,15 @@ int display(char* database)
             strncmp(key.data, "cbs", key.size) == 0 ||
             strncmp(key.data, "cs", key.size) == 0
             ) {
-            printf("%.*s : %d\n", (int)key.size, (char*)key.data, *(int*)data.data);
+            fprintf(stderr, "%.*s : %d\n", (int)key.size, (char*)key.data, *(int*)data.data);
         }
         //bool
         else if (strncmp(key.data, "rr", key.size) == 0) {
-            printf("%.*s : ", (int)key.size, (char*)key.data);
+            fprintf(stderr, "%.*s : ", (int)key.size, (char*)key.data);
             if (*(bool*)data.data == true)
-                printf("true\n");
+                fprintf(stderr, "true\n");
             else
-                printf("false\n");
+                fprintf(stderr, "false\n");
         }
 
         //string
@@ -294,7 +294,7 @@ int display(char* database)
     }
     if (ret != DB_NOTFOUND) {
         dbp->err(dbp, ret, "DBcursor->get");
-        printf("Cursor ERROR\n");
+        fprintf(stderr, "Cursor ERROR\n");
         exit(0);
     }
 
