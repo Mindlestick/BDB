@@ -5,28 +5,19 @@
 #include <db.h>
 #include "onem2m.h"
 
-int main() {
-    AE **ae = Get_All_AE();
-    if (ae == NULL || *ae == NULL) {
-        fprintf(stderr, "Return NULL\n");
-        return -1;
-    }
-    else {
-        for (int i = 0; i < 3; i++) {
-            fprintf(stderr, "ri : %s\nrn : %s\npi : %s\net : %s\naei : %s\napi : %s\nct : %s\nlt : %s\n",
-                ae[i]->ri, ae[i]->rn, ae[i]->pi, ae[i]->et, ae[i]->aei,
-                ae[i]->api, ae[i]->ct, ae[i]->lt);
-            if (ae[i]->rr == 1) {
-                fprintf(stderr, "rr : true\n");
-            }
-            fprintf(stderr, "ty : %d\n", ae[i]->ty);
-        }
 
+int main() {
+
+    Node* ae = Get_All_AE();
+    while (ae) {
+        fprintf(stderr, "%s\n", ae->rn);
+        ae = ae->siblingRight;
     }
+
     return 0;
 }
 
-AE** Get_All_AE(){
+Node* Get_All_AE() {
     fprintf(stderr, "[Get All AE]\n");
 
     char* database = "AE.db";
@@ -80,72 +71,42 @@ AE** Get_All_AE(){
     }
 
     // cnt 개수만큼 동적할당
-    AE** new_ae = (AE**)malloc(sizeof(AE*)*cnt);
-    for (int i = 0; i < cnt; i++) {
-        new_ae[i] = (AE*)malloc(sizeof(AE));
-    }
+    Node* head = (Node*)malloc(sizeof(Node));
+    Node* node_ri;
+    Node* node_pi;
+    Node* node_rn;
+    Node* node_ty;
 
+    node_ri = node_pi = node_rn = node_ty = head;
 
-    int cnt_ri = 0;
-    int cnt_rn = 0;
-    int cnt_pi = 0;
-    int cnt_ty = 0;
-    int cnt_et = 0;
-    int cnt_lt = 0;
-    int cnt_ct = 0;
-    int cnt_api = 0;
-    int cnt_aei = 0;
-    int cnt_rr = 0;
     while ((ret = dbcp->get(dbcp, &key, &data, DB_NEXT)) == 0) {
+        if (strncmp(key.data, "pi", key.size) == 0) {
+            node_pi->pi = malloc(data.size);
+            strcpy(node_pi->pi, data.data);
+            node_pi->siblingRight = (Node*)malloc(sizeof(Node));
+            node_pi->siblingRight->siblingLeft = node_pi;
+            node_pi = node_pi->siblingRight;
+        }
         if (strncmp(key.data, "ri", key.size) == 0) {
-            new_ae[cnt_ri]->ri = malloc(data.size);
-            strcpy(new_ae[cnt_ri]->ri, data.data);
-            cnt_ri++;
+            node_ri->ri = malloc(data.size);
+            strcpy(node_ri->ri, data.data);
+            node_ri = node_ri->siblingRight;
+
         }
         if (strncmp(key.data, "rn", key.size) == 0) {
-            new_ae[cnt_rn]->rn = malloc(data.size);
-            strcpy(new_ae[cnt_rn]->rn, data.data);
-            cnt_rn++;
-        }
-        if (strncmp(key.data, "pi", key.size) == 0) {
-            new_ae[cnt_pi]->pi = malloc(data.size);
-            strcpy(new_ae[cnt_pi]->pi, data.data);
-            cnt_pi++;
-        }
-        if (strncmp(key.data, "api", key.size) == 0) {
-            new_ae[cnt_api]->api = malloc(data.size);
-            strcpy(new_ae[cnt_api]->api, data.data);
-            cnt_api++;
-        }
-        if (strncmp(key.data, "aei", key.size) == 0) {
-            new_ae[cnt_aei]->aei = malloc(data.size);
-            strcpy(new_ae[cnt_aei]->aei, data.data);
-            cnt_aei++;
-        }
-        if (strncmp(key.data, "et", key.size) == 0) {
-            new_ae[cnt_et]->et = malloc(data.size);
-            strcpy(new_ae[cnt_et]->et, data.data);
-            cnt_et++;
-        }
-        if (strncmp(key.data, "lt", key.size) == 0) {
-            new_ae[cnt_lt]->lt = malloc(data.size);
-            strcpy(new_ae[cnt_lt]->lt, data.data);
-            cnt_lt++;
-        }
-        if (strncmp(key.data, "ct", key.size) == 0) {
-            new_ae[cnt_ct]->ct = malloc(data.size);
-            strcpy(new_ae[cnt_ct]->ct, data.data);
-            cnt_ct++;
+            node_rn->rn = malloc(data.size);
+            strcpy(node_rn->rn, data.data);
+            node_rn = node_rn->siblingRight;
         }
         if (strncmp(key.data, "ty", key.size) == 0) {
-            new_ae[cnt_ty]->ty = *(int*)data.data;
-            cnt_ty++;
-        }
-        if (strncmp(key.data, "rr", key.size) == 0) {
-            new_ae[cnt_rr]->rr = *(bool*)data.data;
-            cnt_rr++;
+            node_ty->ty = *(int*)data.data;
+            node_ty = node_ty->siblingRight;
         }
     }
+
+    node_pi->siblingLeft->siblingRight = NULL;
+    free(node_pi);
+    node_ri = node_pi = node_rn = node_ty = NULL;
 
     if (ret != DB_NOTFOUND) {
         dbp->err(dbp, ret, "DBcursor->get");
@@ -153,5 +114,5 @@ AE** Get_All_AE(){
         exit(0);
     }
 
-    return new_ae;
+    return head;
 }
