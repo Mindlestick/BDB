@@ -134,7 +134,10 @@ AE* Delete_AE(char* ri);
 CNT* Delete_CNT(char* ri);
 CIN* Delete_CIN(char* ri);
 
+Node* Get_All_CSE();
 Node* Get_All_AE();
+Node* Get_All_CNT();
+Node* Get_All_CIN();
 
 //Resource Tree function
 void Set_AE(AE* ae, char* pi);
