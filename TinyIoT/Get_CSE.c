@@ -6,14 +6,15 @@
 #include "onem2m.h"
 
 int main() {
-    CSE *cse = Get_CSE("5-20191210093452845");
-    printf("%s %s %s %s %s %s %d\n", cse->ri,cse->rn, cse->pi, cse->csi, cse->ct, cse->lt, cse->ty);
+    CSE *cse = Get_CSE();
+    fprintf(stderr, "%s\n%s\n%s\n%s\n%s\n%s\n%d\n", 
+        cse->ri,cse->rn, cse->pi, cse->csi, cse->ct, cse->lt, cse->ty);
     
     return 0;
 }
 
-CSE* Get_CSE(char* ri) {
-    printf("[Get CSE] ri = %s\n", ri);
+CSE* Get_CSE() {
+    fprintf(stderr, "[Get CSE]\n");
 
     //store CSE Object
     CSE* new_cse = (CSE*)malloc(sizeof(CSE));
