@@ -20,7 +20,6 @@ CSE* Get_CSE() {
     CSE* new_cse = (CSE*)malloc(sizeof(CSE));
 
     char* database = "CSE.db";
-
     DB* dbp;
     DBC* dbcp;
     DBT key, data;
