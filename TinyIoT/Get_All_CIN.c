@@ -4,6 +4,7 @@
 #include <string.h>
 #include <db.h>
 #include "onem2m.h"
+#include "time.h"
 
 int main() {
 

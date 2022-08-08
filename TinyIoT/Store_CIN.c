@@ -10,6 +10,9 @@ int display(char* database);
 int main() {
     CIN cin1;
     CIN cin2;
+    CIN cin3;
+    CIN cin4;
+    CIN cin5;
 
     //input example
     cin1.pi = "3-20220513091700249586";
@@ -25,20 +28,55 @@ int main() {
     cin1.csi = "test";
 
     cin2.pi = "3-20220513091700249586";
-    cin2.ri = "4-20210513093154147745";
+    cin2.ri = "4-20220808113154147745";
     cin2.ty = 4;
     cin2.ct = "202105T093154";
     cin2.st = 1;
-    cin2.rn = "4-20210513093154147745";
-    cin2.lt = "20210513T093154";
-    cin2.et = "20210513T093154";
+    cin2.rn = "4-20220808113154147745";
+    cin2.lt = "20220808T113154";
+    cin2.et = "20220808T113154";
     cin2.cs = 2;
     cin2.con = "OFF";
 
+    cin3.pi = "3-20220513091700249586";
+    cin3.ri = "4-20220808093154147745";
+    cin3.ty = 4;
+    cin3.ct = "202105T093154";
+    cin3.st = 1;
+    cin3.rn = "4-20220808093154147745";
+    cin3.lt = "20220808T093154";
+    cin3.et = "20220808T093154";
+    cin3.cs = 2;
+    cin3.con = "ON";
+
+    cin4.pi = "3-20220513091700249586";
+    cin4.ri = "4-20220807233154147745";
+    cin4.ty = 4;
+    cin4.ct = "202105T093154";
+    cin4.st = 1;
+    cin4.rn = "4-20220807233154147745";
+    cin4.lt = "20220807T233154";
+    cin4.et = "20220807T233154";
+    cin4.cs = 2;
+    cin4.con = "ON";
+
+    cin5.pi = "3-20220513091700249586";
+    cin5.ri = "4-20220807113154147745";
+    cin5.ty = 4;
+    cin5.ct = "202105T093154";
+    cin5.st = 1;
+    cin5.rn = "4-20220807113154147745";
+    cin5.lt = "20220807T113154";
+    cin5.et = "20220807T113154";
+    cin5.cs = 2;
+    cin5.con = "ON";
 
     // [success -> 1] 
     if (Store_CIN(&cin1)) printf("store success!\n");
     if (Store_CIN(&cin2)) printf("store success!\n");
+    if (Store_CIN(&cin3)) printf("store success!\n");
+    if (Store_CIN(&cin4)) printf("store success!\n");
+    if (Store_CIN(&cin5)) printf("store success!\n");
 
     // print
     char* DATABASE = "CIN.db";
