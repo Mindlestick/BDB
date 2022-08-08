@@ -6,13 +6,14 @@
 #include <time.h>
 #include "onem2m.h"
 
-Node* Get_CIN_Range(char* now);
+Node* Get_CIN_Range(char* start_time, char* end_time);
 char* Get_LocalTime();
 
 int main() {
+    char* past = "20220807T222120";
     char* now = Get_LocalTime();
 
-    Node* cin = Get_CIN_Range(now);
+    Node* cin = Get_CIN_Range(past, now);
     while (cin) {
         fprintf(stderr, "%s\n", cin->rn);
         cin = cin->siblingRight;
@@ -47,40 +48,23 @@ char* Get_LocalTime() {
     return now;
 }
 
-Node* Get_CIN_Range(char* now) {
-    //fprintf(stderr, "[Get_CIN_Range]\n");
-    char year[5], mon[3], day[3], hour[3], minute[3], sec[3];
-    
-    strncpy(year, now, 4);
-    year[4] = '\0';
-    strncpy(mon, now + 4, 2);
-    mon[2] = '\0';
-    strncat(day, now + 6, 2);
-    day[2] = '\0';
-    //printf("<%s/%s/%s>\n", year, mon, day);
+Node* Get_CIN_Range(char* start_time, char* end_time) {
+    //start_time과 end_time은 [20220807T215215] 형태
+    fprintf(stderr, "<%s ~ %s>\n",start_time, end_time);
 
-    strncpy(hour, now + 9, 2);
-    hour[2] = '\0';
-    strncpy(minute, now + 11, 2);
-    minute[2] = '\0';
-    strncpy(sec, now + 13, 2);
-    sec[2] = '\0';
-    //printf("<%s/%s/%s>\n", hour, minute, sec);
+    // start_ri와 end_ri는 [4-20220808T113154] 형태
+    char* start_ri = (char*)calloc(18, sizeof(char));
+    char* end_ri = (char*)calloc(18, sizeof(char));
 
-    strcpy(day, "07");
-    char* search = (char*)calloc(18, sizeof(char));
-    //strcat(search_past, "4-");
-    strcat(search, year);
-    strcat(search, mon);
-    strcat(search, day);
-    strcat(search, "T");
-    strcat(search, hour);
-    strcat(search, minute);
-    strcat(search, sec);
+    strcat(start_ri, "4-");
+    strcat(start_ri, start_time);
 
-    fprintf(stderr, "<%s ~ %s>\n",now, search);
+    strcat(end_ri, "4-");
+    strcat(end_ri, end_time);
 
+    //fprintf(stderr, "<%s ~ %s>\n", start_ri, end_ri);
 
+    // DB 관련 함수
     char* database = "CIN.db";
 
     DB* dbp;
@@ -112,7 +96,10 @@ Node* Get_CIN_Range(char* now) {
     memset(&data, 0, sizeof(data));
 
     int cnt = 0;
-    // 몇번째 CIN인지 찾기 위한 커서
+    int idx = 0;
+    int* arr = NULL;
+
+    // 오브젝트가 몇개인지 찾기 위한 커서
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
@@ -123,33 +110,51 @@ Node* Get_CIN_Range(char* now) {
             cnt++; // 오브젝트 개수
         }
     }
-    //fprintf(stderr, "<%d>\n",cnt);
-
     if (cnt == 0) {
         fprintf(stderr, "Data not exist\n");
         return NULL;
         exit(1);
     }
+    //fprintf(stderr, "<%d>\n", cnt);
+
+    //오브젝트 개수만큼 동적할당
+    arr = (int*)malloc(sizeof(int) * cnt);
+    //for (int i = 0; i < cnt; i++) arr[i] = 0;
+
+    // 해당하는 오브젝트가 몇개인지 찾기 위한 커서
+    DBC* dbcp1;
+    if ((ret = dbp->cursor(dbp, NULL, &dbcp1, 0)) != 0) {
+        dbp->err(dbp, ret, "DB->cursor");
+        exit(1);
+    }
+    // 해당하는 오브젝트 배열에 1로 표시 0 1 1 1 0 <- 두번째 세번째 네번째 오브젝트가 해당
+    while ((ret = dbcp1->get(dbcp1, &key, &data, DB_NEXT)) == 0) {
+        if (strncmp(key.data, "ri", key.size) == 0) {
+            //9 : day, 16: time
+            if (strncmp(start_ri, data.data, 16) <= 0 && strncmp(end_ri, data.data, 16) >= 0)
+                arr[idx] = 1;
+            idx++;
+        }
+    }
+    //해당하는 오브젝트가 없음
+    if (idx == 0) {
+        fprintf(stderr, "Data not exist\n");
+        return NULL;
+        exit(1);
+    }
+    //for (int i = 0; i < cnt; i++) printf("%d ", arr[i]);
+
 
     Node* head = (Node*)malloc(sizeof(Node));
     Node* node_ri;
     Node* node_pi;
     Node* node_rn;
     Node* node_ty;
-    Node* node_lt;
 
-    node_ri = node_pi = node_rn = node_ty = node_lt = head;
-    int* arr = NULL;
-    int idx = 0;
-    arr = (int*)malloc(sizeof(int) * cnt);
+    node_ri = node_pi = node_rn = node_ty = head;
+
 
     while ((ret = dbcp->get(dbcp, &key, &data, DB_NEXT)) == 0) {
-        if (strncmp(key.data, "lt", key.size) == 0) {
-            //printf("(%d)\n", strncmp(search, data.data, 16)); //10 : day, 16: time
-            if(strncmp(search, data.data, 16) <= 0 && strncmp(now, data.data, 16) >=0 )
-                arr[idx] = 1;
-            idx++;
-        }
         if (strncmp(key.data, "pi", key.size) == 0) {
             if (arr[idx % cnt]) {
                 //printf("[%d]", idx % cnt);
@@ -184,8 +189,9 @@ Node* Get_CIN_Range(char* now) {
             }
             idx++;
         }
+        
     }
-    //for (int i = 0; i < 5; i++) printf("%d ", arr[i]);
+    // for (int i = 0; i < cnt; i++) printf("%d ", arr[i]);
 
     node_pi->siblingLeft->siblingRight = NULL;
     free(node_pi);
