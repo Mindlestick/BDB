@@ -139,6 +139,8 @@ Node* Get_All_AE();
 Node* Get_All_CNT();
 Node* Get_All_CIN();
 
+char* Get_LocalTime();
+Node* Get_CIN_Period(char* start_time, char* end_time);
 
 //Resource Tree function
 void Set_AE(AE* ae, char* pi);
