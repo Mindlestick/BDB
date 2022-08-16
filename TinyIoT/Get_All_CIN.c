@@ -131,7 +131,6 @@ Node* Get_All_CIN() {
     else head = NULL;
     Free_Node(node_pi);
     node_ri = node_pi = node_rn = node_ty = NULL;
-    free(arr);
 
     if (ret != DB_NOTFOUND) {
         dbp->err(dbp, ret, "DBcursor->get");

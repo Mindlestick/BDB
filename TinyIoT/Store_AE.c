@@ -298,6 +298,9 @@ int display(char* database)
         exit(0);
     }
 
+    //DB close
+    dbcp->close(dbcp);
+    dbp->close(dbp, 0);
 
 err:    if (close_dbc && (ret = dbcp->close(dbcp)) != 0)
 dbp->err(dbp, ret, "DBcursor->close");

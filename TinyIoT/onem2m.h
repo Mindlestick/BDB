@@ -129,6 +129,8 @@ AE* Get_AE(char* ri);
 CNT* Get_CNT(char* ri);
 CIN* Get_CIN(char* ri);
 
+AE* DB_Update_AE(AE* ae);
+
 CSE* Delete_CSE(char* ri);
 AE* Delete_AE(char* ri);
 CNT* Delete_CNT(char* ri);
