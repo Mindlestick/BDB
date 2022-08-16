@@ -139,7 +139,7 @@ Node* Get_CIN_Period(char* start_time, char* end_time) {
         sum += arr[i];
     }
     if (sum == 0) {
-        fprintf(stderr, "Data not exist\n");
+        fprintf(stderr, "Find data not exist\n");
         return NULL;
         exit(1);
     }
@@ -197,6 +197,7 @@ Node* Get_CIN_Period(char* start_time, char* end_time) {
     node_pi->siblingLeft->siblingRight = NULL;
     free(node_pi);
     node_ri = node_pi = node_rn = node_ty = NULL;
+    free(arr);
 
     if (ret != DB_NOTFOUND) {
         dbp->err(dbp, ret, "DBcursor->get");

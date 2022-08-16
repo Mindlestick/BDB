@@ -8,10 +8,13 @@
 int display(char* database);
 
 int main() {
-    CNT *cnt = Get_CNT("3-20220513093154147745");
-    printf("ri : %s\nrn : %s\npi : %s\net : %s\nct : %s\nlt : %s\n", cnt->ri, cnt->rn, cnt->pi, cnt->et, cnt->ct,
-        cnt->lt);
-    printf("ty : %d\nst : %d\ncnt : %d\ncbs : %d\n",cnt->ty, cnt->st, cnt->cni, cnt->cbs);
+    CNT *cnt = Get_CNT("3-20210513093154147745");
+    if (cnt != NULL) {
+        printf("ri : %s\nrn : %s\npi : %s\net : %s\nct : %s\nlt : %s\n", cnt->ri, cnt->rn, cnt->pi, cnt->et, cnt->ct,
+            cnt->lt);
+        printf("ty : %d\nst : %d\ncnt : %d\ncbs : %d\n", cnt->ty, cnt->st, cnt->cni, cnt->cbs);
+    }
+
     return 0;
 }
 
@@ -61,6 +64,7 @@ CNT* Get_CNT(char* ri) {
     memset(&data, 0, sizeof(data));
 
     int idx = 0;
+    int cnt = 0;
     // 몇번째 CNT인지 찾기 위한 커서
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
@@ -72,11 +76,18 @@ CNT* Get_CNT(char* ri) {
         if (strncmp(key.data, "ri", key.size) == 0) {
             idx++;
             if (strncmp(data.data, ri, data.size) == 0) {
+                cnt++;
                 new_cnt->ri = malloc(data.size);
                 strcpy(new_cnt->ri, data.data);
                 break;
             }
         }
+    }
+
+    if (cnt == 0) {
+        fprintf(stderr, "Data not exist\n");
+        return NULL;
+        exit(1);
     }
 
     int cnt_rn = 0;

@@ -9,11 +9,7 @@ int display(char* database);
 
 int main() {
     AE *ae = Get_AE("TAE3");
-    if (ae == NULL) {
-        printf("Return NULL\n");
-        return -1;
-    }
-    else {
+    if (ae != NULL) {
         printf("ri : %s\nrn : %s\npi : %s\net : %s\naei : %s\napi : %s\nct : %s\nlt : %s\n", ae->ri, ae->rn, ae->pi, ae->et, ae->aei,
             ae->api, ae->ct, ae->lt);
         if (ae->rr == 1) {
@@ -62,7 +58,7 @@ AE* Get_AE(char* ri) {
     memset(&data, 0, sizeof(data));
 
     int idx = 0;
-    int flag = 0;
+    int cnt = 0;
     // 몇번째 AE인지 찾기 위한 커서
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
@@ -73,17 +69,17 @@ AE* Get_AE(char* ri) {
         if (strncmp(key.data, "ri", key.size) == 0) {
             idx++;
             if (strncmp(data.data, ri, data.size) == 0) {
-                flag = 1;
+                cnt++;
                 new_ae->ri = malloc(data.size);
                 strcpy(new_ae->ri, data.data);
                 break;
             }
         }
     }
-    if (flag == 0) {
-        printf("Not Found\n");
+    if (cnt == 0) {
+        fprintf(stderr, "Data not exist\n");
         return NULL;
-        //exit(1);
+        exit(1);
     }
 
     int cnt_rn = 0;

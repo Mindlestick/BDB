@@ -16,6 +16,30 @@ int main() {
 
     return 0;
 }
+void Free_Node(Node* node) {
+    free(node->ri);
+    free(node->rn);
+    free(node->pi);
+    free(node);
+}
+Node* Create_Node(char* ri, char* rn, char* pi, ObjectType ty) {
+    Node* node = (Node*)malloc(sizeof(Node));
+    node->rn = (char*)malloc(sizeof(rn));
+    node->ri = (char*)malloc(sizeof(ri));
+    node->pi = (char*)malloc(sizeof(pi));
+    strcpy(node->rn, rn);
+    strcpy(node->ri, ri);
+    strcpy(node->pi, pi);
+    node->parent = NULL;
+    node->child = NULL;
+    node->siblingLeft = NULL;
+    node->siblingRight = NULL;
+    node->ty = ty;
+    if (strcmp(rn, "") && strcmp(rn, "TinyIoT")) {
+        fprintf(stderr, "\nCreate Tree Node\n[rn] %s\n[ri] %s\n", node->rn, node->ri);
+    }
+    return node;
+}
 
 Node* Get_All_AE() {
     fprintf(stderr, "[Get All AE]\n");
@@ -83,7 +107,7 @@ Node* Get_All_AE() {
         if (strncmp(key.data, "pi", key.size) == 0) {
             node_pi->pi = malloc(data.size);
             strcpy(node_pi->pi, data.data);
-            node_pi->siblingRight = (Node*)malloc(sizeof(Node));
+            node_pi->siblingRight = Create_Node("", "", "", 0);
             node_pi->siblingRight->siblingLeft = node_pi;
             node_pi = node_pi->siblingRight;
         }
@@ -104,9 +128,11 @@ Node* Get_All_AE() {
         }
     }
 
-    node_pi->siblingLeft->siblingRight = NULL;
-    free(node_pi);
+    if (node_pi->siblingLeft) node_pi->siblingLeft->siblingRight = NULL;
+    else head = NULL;
+    Free_Node(node_pi);
     node_ri = node_pi = node_rn = node_ty = NULL;
+    free(arr);
 
     if (ret != DB_NOTFOUND) {
         dbp->err(dbp, ret, "DBcursor->get");

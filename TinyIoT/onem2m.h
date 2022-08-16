@@ -142,7 +142,11 @@ Node* Get_All_CIN();
 char* Get_LocalTime();
 Node* Get_CIN_Period(char* start_time, char* end_time);
 
+Node* Get_CIN_Pi(char* pi);
+
 //Resource Tree function
+void Free_Node(Node* node);
+Node* Create_Node(char* ri, char* rn, char* pi, ObjectType ty);
 void Set_AE(AE* ae, char* pi);
 
 CSE* Get_sample_CSE();

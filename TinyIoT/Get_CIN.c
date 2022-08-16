@@ -8,10 +8,13 @@
 int display(char* database);
 
 int main() {
-    CIN *cin = Get_CIN("4-20220513093154147745");
-    printf("ri : %s\nrn : %s\npi : %s\net : %s\nct : %s\nlt : %s\ncon : %s\ncsi : %s\n", cin->ri, cin->rn, cin->pi, cin->et, cin->ct,
-        cin->lt, cin->con, cin->csi);
-    printf("ty : %d\nst : %d\ncs : %d\n",cin->ty, cin->st, cin->cs);
+    //CIN *cin = Get_CIN("4-20220513T093154");
+    CIN* cin = Get_CIN("4-20220513T093153");
+    if (cin != NULL) {
+        printf("ri : %s\nrn : %s\npi : %s\net : %s\nct : %s\nlt : %s\ncon : %s\ncsi : %s\n", cin->ri, cin->rn, cin->pi, cin->et, cin->ct,
+            cin->lt, cin->con, cin->csi);
+        printf("ty : %d\nst : %d\ncs : %d\n", cin->ty, cin->st, cin->cs);
+    }
     return 0;
 }
 
@@ -61,6 +64,7 @@ CIN* Get_CIN(char* ri) {
     memset(&data, 0, sizeof(data));
 
     int idx = 0;
+    int cnt = 0;
     // 몇번째 CIN인지 찾기 위한 커서
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
@@ -72,11 +76,17 @@ CIN* Get_CIN(char* ri) {
         if (strncmp(key.data, "ri", key.size) == 0) {
             idx++;
             if (strncmp(data.data, ri, data.size) == 0) {
+                cnt++;
                 new_cin->ri = malloc(data.size);
                 strcpy(new_cin->ri, data.data);
                 break;
             }
         }
+    }
+    if (cnt == 0) {
+        fprintf(stderr, "Data not exist\n");
+        return NULL;
+        exit(1);
     }
 
     int cin_rn = 0;
