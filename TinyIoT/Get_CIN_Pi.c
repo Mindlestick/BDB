@@ -96,7 +96,7 @@ Node* Get_CIN_Pi(char* pi) {
 
     //오브젝트 개수만큼 동적할당
     arr = (int*)malloc(sizeof(int) * cnt);
-    //for (int i = 0; i < cnt; i++) arr[i] = 0;
+    for (int i = 0; i < cnt; i++) arr[i] = 0;
 
     // 해당하는 오브젝트가 몇개인지 찾기 위한 커서
     DBC* dbcp1;
@@ -105,7 +105,7 @@ Node* Get_CIN_Pi(char* pi) {
         exit(1);
     }
 
-    // 해당하는 오브젝트 배열에 1로 표시 0 1 1 1 0 <- 두번째 세번째 네번째 오브젝트가 해당
+    // 해당하는 오브젝트 배열에 1로 표시
     while ((ret = dbcp1->get(dbcp1, &key, &data, DB_NEXT)) == 0) {
         if (strncmp(key.data, "pi", key.size) == 0) {
             if (strcmp(pi,data.data)== 0)

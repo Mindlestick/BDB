@@ -11,7 +11,7 @@ int main() {
     ae_before.rn = "Sensor1_update";
     ae_before.ty = 3;
     ae_before.pi = "5-20191210093452845";
-    ae_before.ri = "TAE1";
+    ae_before.ri = "TAE2";
     ae_before.ct = "20220513T083900";
     ae_before.lt = "20220513T083900";
     ae_before.et = "20240513T083900";
@@ -95,13 +95,13 @@ AE* DB_Update_AE(AE* ae) {
         if (strncmp(key.data, "ri", key.size) == 0) {
             idx++;
             if (strncmp(data.data, ae->ri, data.size) == 0) {
-                cnt++;
+                cnt++; // update할 AE의 ri가 존재하면 cnt > 0
                 break;
             }
         }
     }
 
-    // 인자로 들어온 오브젝트가 존재하지 않으면 NULL 반환
+    // 인자로 들어온 ri가 존재하지 않으면 NULL 반환
     if (cnt == 0) {
         fprintf(stderr, "Data not exist\n");
         return NULL;

@@ -116,7 +116,7 @@ Node* Get_CIN_Period(char* start_time, char* end_time) {
 
     //오브젝트 개수만큼 동적할당
     arr = (int*)malloc(sizeof(int) * cnt);
-    //for (int i = 0; i < cnt; i++) arr[i] = 0;
+    for (int i = 0; i < cnt; i++) arr[i] = 0;
 
     // 해당하는 오브젝트가 몇개인지 찾기 위한 커서
     DBC* dbcp1;
