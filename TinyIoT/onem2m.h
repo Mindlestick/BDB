@@ -119,6 +119,10 @@ char* CIN_to_json(CIN* cin_object);
 //DB function
 int display(char* database);
 
+char* Label_To_URI(char* label);
+char* URI_To_Label(char* uri);
+int Store_Label(char* label, char* uri);
+
 int Store_CSE(CSE* cse_object);
 int Store_AE(AE* ae_object);
 int Store_CNT(CNT* cnt_object);
@@ -130,6 +134,7 @@ CNT* Get_CNT(char* ri);
 CIN* Get_CIN(char* ri);
 
 AE* DB_Update_AE(AE* ae);
+CNT* DB_Update_CNT(CNT* cnt_object);
 
 CSE* Delete_CSE(char* ri);
 AE* Delete_AE(char* ri);

@@ -5,10 +5,6 @@
 #include <db.h>
 #include "onem2m.h"
 
-char* Label_To_URI(char* label);
-char* URI_To_Label(char* uri);
-int Store_Label(char* label, char* uri);
-
 int main() {
     char* label1 = "label1";
     char* uri1 = "http://1";
@@ -16,8 +12,8 @@ int main() {
     char* label2 = "label2";
     char* uri2 = "http://2";
 
-    char* label3 = "label3";
-    char* uri3 = "http://3";
+    char* label3 = "myCNT";
+    char* uri3 = "/TinyIoT/test_AE1/test_CNT1";
 
     Store_Label(label1, uri1);
     Store_Label(label2, uri2);
@@ -26,12 +22,12 @@ int main() {
     display("LABEL.db");
 
     char* return_uri = Label_To_URI(label2);
-    char* return_uri2 = Label_To_URI("label999");
+    char* return_uri2 = Label_To_URI("/TinyIoT/test_AE1/test_CNT1");
     char* return_label = URI_To_Label(uri3);
 
     printf("\nlabel2 -> %s\n", return_uri);
-    if (return_uri2 == NULL) printf("label999 -> NULL\n");
-    printf("http://3 -> %s\n", return_label);
+    if (return_uri2 == NULL) printf("/TinyIoT/test_AE1/test_CNT1 -> NULL\n");
+    printf("/TinyIoT/test_AE1/test_CNT1 -> %s\n", return_label);
 
     return 0;
 }
