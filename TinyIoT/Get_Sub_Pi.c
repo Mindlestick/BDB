@@ -8,16 +8,14 @@
 SubNode* Get_Sub_Pi(char* pi);
 int main() {
 
-    /*
-    SubNode* sub = Get_CIN_Pi("3-20220406084023203796");
+    SubNode* sub = Get_Sub_Pi("3-20220406084023203796");
     while (sub) {
-        fprintf(stderr, "%s\n", sub->rn);
+        if (sub->rn == NULL) break;
+        fprintf(stderr, "%s %s %s %d %s\n", sub->rn,sub->ri,sub->nu,sub->sub_bit,sub->pi);
         sub = sub->siblingRight;
     }
-    */
-    char* test;
-
-    printf("%d\n", (int)sizeof(SUB));
+    
+    //printf("%d\n", (int)sizeof(SUB));
     return 0;
 }
 
@@ -52,8 +50,85 @@ SubNode* Get_Sub_Pi(char* pi){
     memset(&key, 0, sizeof(key));
     memset(&data, 0, sizeof(data));
 
+    int cnt = 0;
+    int idx = 0;
+    int cnt_sub = 0;
 
-    return NULL;
+    // 오브젝트가 몇개인지 찾기 위한 커서
+    DBC* dbcp0;
+    if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
+        dbp->err(dbp, ret, "DB->cursor");
+        exit(1);
+    }
+    while ((ret = dbcp0->get(dbcp0, &key, &data, DB_NEXT)) == 0) {
+        if (strncmp(key.data, pi, key.size) == 0) {
+            cnt++; // 전체 개수
+        }
+    }
+
+    //오브젝트 개수 설정
+    int struct_size = 10;
+    cnt = cnt / struct_size;
+
+    SubNode* head = (SubNode*)calloc(cnt, sizeof(SubNode));
+    SubNode* node;
+    node = head;
+    //node_ri = node_pi = node_rn = node_nu = node_sub_bit = head;
+    
+    while ((ret = dbcp->get(dbcp, &key, &data, DB_NEXT)) == 0) {
+        if (strncmp(key.data, pi, key.size) == 0) {
+            if (idx== 0) {
+                node->rn = malloc(data.size);
+                strcpy(node->rn, data.data);
+
+                node->siblingRight = (SubNode*)malloc(sizeof(SubNode));
+                node->siblingRight->siblingLeft = node;
+
+                idx++;
+                continue;
+            }
+            else if (idx == 1) {
+                node->ri = malloc(data.size);
+                strcpy(node->ri, data.data);
+
+                idx++;
+                continue;
+            }
+            else if (idx == 2) {
+                node->nu = malloc(data.size);
+                strcpy(node->nu, data.data);
+
+                idx++;
+                continue;
+            }
+            else if (idx == 3) {
+                node->sub_bit = *(int*)data.data;
+
+                idx++;
+                continue;
+            }
+            else if (idx == 4) {
+                node->pi = malloc(key.size);
+                strcpy(node->pi, key.data);
+
+                node = node->siblingRight;
+                //idx = 0;
+                idx++;
+                continue;
+            }
+            else {
+                idx++;
+                if (idx == struct_size) idx = 0;
+            }
+        }
+    }
+
+    /* DB close */
+    dbcp->close(dbcp0);
+    dbcp->close(dbcp);
+    dbp->close(dbp, 0);
+
+    return head;
 }
 
 int display(char* database)
