@@ -10,7 +10,6 @@ int main() {
 
     SubNode* sub = Get_Sub_Pi("3-20220406084023203796");
     while (sub) {
-        if (sub->rn == NULL) break;
         fprintf(stderr, "%s %s %s %d %s\n", sub->rn,sub->ri,sub->nu,sub->sub_bit,sub->pi);
         sub = sub->siblingRight;
     }
@@ -77,7 +76,8 @@ SubNode* Get_Sub_Pi(char* pi){
     
     while ((ret = dbcp->get(dbcp, &key, &data, DB_NEXT)) == 0) {
         if (strncmp(key.data, pi, key.size) == 0) {
-            if (idx== 0) {
+            switch (idx) {
+            case 0:
                 node->rn = malloc(data.size);
                 strcpy(node->rn, data.data);
 
@@ -85,43 +85,43 @@ SubNode* Get_Sub_Pi(char* pi){
                 node->siblingRight->siblingLeft = node;
 
                 idx++;
-                continue;
-            }
-            else if (idx == 1) {
+                break;
+            case 1:
                 node->ri = malloc(data.size);
                 strcpy(node->ri, data.data);
 
                 idx++;
-                continue;
-            }
-            else if (idx == 2) {
+                break;
+            case 2:
                 node->nu = malloc(data.size);
                 strcpy(node->nu, data.data);
 
                 idx++;
-                continue;
-            }
-            else if (idx == 3) {
+                break;
+            case 3:
                 node->sub_bit = *(int*)data.data;
 
                 idx++;
-                continue;
-            }
-            else if (idx == 4) {
+                break;
+            case 4:
                 node->pi = malloc(key.size);
                 strcpy(node->pi, key.data);
 
                 node = node->siblingRight;
-                //idx = 0;
                 idx++;
-                continue;
-            }
-            else {
+                break;
+            default:
                 idx++;
                 if (idx == struct_size) idx = 0;
             }
+            
         }
     }
+
+
+    node->siblingLeft->siblingRight = NULL;
+    free(node);
+    node = NULL;
 
     /* DB close */
     dbcp->close(dbcp0);
