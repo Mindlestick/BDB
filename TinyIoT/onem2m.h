@@ -91,25 +91,18 @@ typedef struct Node {
 	char* rn;
 	char* ri;
 	char* pi;
+	char* nu;
+	char* sur;
 	ObjectType ty;
+
+	int cinSize;
+	int net;
 }Node;
 
 typedef struct {
 	Node* root;
 }RT;
 
-typedef struct SubNode {
-	struct Node* parent;
-	struct SubNode* siblingLeft;
-	struct SubNode* siblingRight;
-
-	char* nu;
-	char* pi;
-	char* rn;
-	char* ri;
-	char* sur;
-	int net;
-}SubNode;
 
 
 //Request parse function
@@ -181,7 +174,7 @@ Node* Get_CIN_Period(char* start_time, char* end_time);
 Node* Get_CIN_Pi(char* pi);
 
 int Subscription(SUB* sub_object);
-SubNode* Get_Sub_Pi(char* pi);
+Node* Get_Sub_Pi(char* pi);
 
 //Resource Tree function
 void Free_Node(Node* node);

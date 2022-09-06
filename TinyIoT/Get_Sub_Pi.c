@@ -10,7 +10,7 @@
 
 int NetToBit(char* net);
 int main() {
-    SubNode* sub = Get_Sub_Pi("3-20220406084023203796");
+    Node* sub = Get_Sub_Pi("3-20220406084023203796");
 
     while (sub) {
         fprintf(stderr, "%s %s %s %d %s\n", sub->rn,sub->ri,sub->nu,sub->net,sub->pi);
@@ -32,7 +32,7 @@ int NetToBit(char* net) {
     return ret;
 }
 
-SubNode* Get_Sub_Pi(char* pi){
+Node* Get_Sub_Pi(char* pi){
     char* database = "SUB.db";
 
     DB* dbp;
@@ -90,8 +90,8 @@ SubNode* Get_Sub_Pi(char* pi){
     char* tmp;
 
 
-    SubNode* head = (SubNode*)calloc(cnt, sizeof(SubNode));
-    SubNode* node;
+    Node* head = (Node*)calloc(cnt, sizeof(Node));
+    Node* node;
     node = head;
     //node_ri = node_pi = node_rn = node_nu = node_sub_bit = head;
     
@@ -102,7 +102,7 @@ SubNode* Get_Sub_Pi(char* pi){
                 node->rn = malloc(data.size);
                 strcpy(node->rn, data.data);
 
-                node->siblingRight = (SubNode*)malloc(sizeof(SubNode));
+                node->siblingRight = (Node*)malloc(sizeof(Node));
                 node->siblingRight->siblingLeft = node;
 
                 idx++;
