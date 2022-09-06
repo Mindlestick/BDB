@@ -3,17 +3,33 @@
 #include <stdlib.h>
 #include <string.h>
 #include <db.h>
+#include <math.h>
+#include <time.h>
+
 #include "onem2m.h"
 
+int NetToBit(char* net);
 int main() {
-
     SubNode* sub = Get_Sub_Pi("3-20220406084023203796");
+
     while (sub) {
-        fprintf(stderr, "%s %s %s %s %s\n", sub->rn,sub->ri,sub->nu,sub->net,sub->pi);
+        fprintf(stderr, "%s %s %s %d %s\n", sub->rn,sub->ri,sub->nu,sub->net,sub->pi);
         sub = sub->siblingRight;
     }
     
     return 0;
+}
+
+int NetToBit(char* net) {
+    int netLen = strlen(net);
+    int ret = 0;
+
+    for (int i = 0; i < netLen; i++) {
+        int exp = atoi(net + i);
+        if (exp > 0) ret = (ret | (int)pow(2, exp - 1));
+    }
+
+    return ret;
 }
 
 SubNode* Get_Sub_Pi(char* pi){
@@ -71,6 +87,7 @@ SubNode* Get_Sub_Pi(char* pi){
     //오브젝트 개수 설정
     int struct_size = 9;
     cnt = cnt / struct_size;
+    char* tmp;
 
 
     SubNode* head = (SubNode*)calloc(cnt, sizeof(SubNode));
@@ -103,8 +120,12 @@ SubNode* Get_Sub_Pi(char* pi){
                 idx++;
                 break;
             case 3:
-                node->net = malloc(data.size);
-                strcpy(node->net, data.data);
+                //tmp = malloc(data.size);
+                //strcpy(tmp, data.data);
+                node->net = NetToBit(data.data);
+
+                //node->net = malloc(data.size);
+                //strcpy(node->net, data.data);
 
                 idx++;
                 break;

@@ -4,11 +4,13 @@
 #include <string.h>
 #include <db.h>
 #include <ctype.h>
+#include <math.h>
+#include <time.h>
 
 #include "onem2m.h"
 
-
 int main() {
+
     SUB sub1;
     SUB sub2;
     SUB sub3;
@@ -39,7 +41,7 @@ int main() {
     sub3.ri = "23-2023040684653299304";
     sub3.pi = "3-20220406084023203796";
     sub3.nu = "http://223.131.176.101:3000/ct=json";
-    sub3.net = "3";
+    sub3.net = "7";
     sub3.ct = "20230406T084653";
     sub3.et = "20230406T084653";
     sub3.lt = "20230406T084653";
@@ -49,6 +51,7 @@ int main() {
     Subscription(&sub1);
     Subscription(&sub2);
     Subscription(&sub3);
+
     display("SUB.db");
 
     return 0;

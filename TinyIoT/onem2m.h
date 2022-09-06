@@ -69,14 +69,15 @@ typedef struct {
 
 
 typedef struct {
+	char* et;
+	char* ct;
+	char* lt;
 	char* rn;
 	char* ri;
 	char* pi;
 	char* nu;
 	char* net;
-	char* ct;
-	char* et;
-	char* lt;
+	char* sur;
 	int ty;
 	int nct;
 } SUB;
@@ -106,7 +107,8 @@ typedef struct SubNode {
 	char* pi;
 	char* rn;
 	char* ri;
-	char* net;
+	char* sur;
+	int net;
 }SubNode;
 
 

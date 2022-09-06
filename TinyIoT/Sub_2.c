@@ -3,22 +3,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <db.h>
-#include <ctype.h>
-
+#include <time.h>
 #include "onem2m.h"
+double start, end;
 
-
+int Subscription_2(SUB* sub_object);
 int main() {
     SUB sub1;
     SUB sub2;
     SUB sub3;
-    SUB sub4;
 
     sub1.rn = "sub1";
     sub1.ri = "23-2022040684653299304";
     sub1.pi = "3-20220406084023203796";
     sub1.nu = "http://223.131.176.101:3000/ct=json";
-    sub1.net = 1;
+    sub1.net = "1";
     sub1.ct = "20220406T084653";
     sub1.et = "20220406T084653";
     sub1.lt = "20220406T084653";
@@ -29,7 +28,7 @@ int main() {
     sub2.ri = "23-2021040684653299304";
     sub2.pi = "3-20220406084023203796";
     sub2.nu = "http://223.131.176.101:3000/ct=json";
-    sub2.net = 2;
+    sub2.net = "2";
     sub2.ct = "20210406T084653";
     sub2.et = "20210406T084653";
     sub2.lt = "20210406T084653";
@@ -40,23 +39,28 @@ int main() {
     sub3.ri = "23-2023040684653299304";
     sub3.pi = "3-20220406084023203796";
     sub3.nu = "http://223.131.176.101:3000/ct=json";
-    sub3.net = 3;
-    sub3.ct = "20230406T084653";
-    sub3.et = "20230406T084653";
-    sub3.lt = "20230406T084653";
+    sub3.net = "15";
+    sub3.ct = "20210406T084653";
+    sub3.et = "20210406T084653";
+    sub3.lt = "20210406T084653";
     sub3.ty = 23;
     sub3.nct = 1;
 
-    Subscription(&sub1);
-    Subscription(&sub2);
-    Subscription(&sub3);
-    display("SUB.db");
+
+    start = (double)clock() / CLOCKS_PER_SEC;
+    Subscription_2(&sub1);
+    Subscription_2(&sub2);
+    Subscription_2(&sub3);
+    end = (((double)clock()) / CLOCKS_PER_SEC);
+    printf("Sub2_time :%lf\n", (end - start));
+
+    display("SUB_2.db");
 
     return 0;
 }
 
-int Subscription(SUB *sub_object) {
-    char* DATABASE = "SUB.db";
+int Subscription_2(SUB* sub_object) {
+    char* DATABASE = "SUB_2.db";
 
     DB* dbp;    // db handle
     DBC* dbcp;
@@ -64,32 +68,29 @@ int Subscription(SUB *sub_object) {
     DBT key, data;  // storving key and real data
     int ret;        // template value
 
-    DBT key_pi;
-    DBT data_rn, data_net, data_nu, data_ri, data_ct, data_et, data_lt, data_ty, data_nct;  // storving key and real data
+    DBT key_rn, key_ri, key_pi, key_nu, key_net, key_ct, key_et, key_lt, key_ty, key_nct;
+    DBT data_rn, data_ri, data_pi, data_nu, data_net, data_ct, data_et, data_lt, data_ty, data_nct;  // storving key and real data
 
     char* program_name = "my_prog";
 
     // if input == NULL
-    if (sub_object->pi == NULL) {
-        fprintf(stderr, "The key is NULL\n");
-        return 0;
-    }
     if (sub_object->rn == NULL) sub_object->rn = "";
     if (sub_object->ri == NULL) sub_object->ri = "";
+    if (sub_object->pi == NULL) sub_object->pi = "";
     if (sub_object->nu == NULL) sub_object->nu = "";
-    if (sub_object->net == '\0') sub_object->net = 1;
+    if (sub_object->net == NULL) sub_object->net = "1";
     if (sub_object->ct == NULL) sub_object->ct = "";
     if (sub_object->et == NULL) sub_object->et = "";
     if (sub_object->lt == NULL) sub_object->lt = "";
     if (sub_object->ty == '\0') sub_object->ty = 23;
-    if (sub_object->nct == '\0') sub_object->nct = 1;
+    if (sub_object->nct == '\0') sub_object->nct = 0;
 
 
     ret = db_create(&dbp, NULL, 0);
     if (ret) {
         fprintf(stderr, "db_create : %s\n", db_strerror(ret));
-        fprintf(stderr, "File ERROR\n");
-        return 0;
+        printf("File ERROR\n");
+        exit(1);
     }
 
     dbp->set_errfile(dbp, error_file_pointer);
@@ -99,7 +100,7 @@ int Subscription(SUB *sub_object) {
     ret = dbp->set_flags(dbp, DB_DUP);
     if (ret != 0) {
         dbp->err(dbp, ret, "Attempt to set DUPSORT flag failed.");
-        fprintf(stderr, "Flag Set ERROR\n");
+        printf("Flag Set ERROR\n");
         dbp->close(dbp, 0);
         return(ret);
     }
@@ -108,8 +109,8 @@ int Subscription(SUB *sub_object) {
     ret = dbp->open(dbp, NULL, DATABASE, NULL, DB_BTREE, DB_CREATE, 0664);
     if (ret) {
         dbp->err(dbp, ret, "%s", DATABASE);
-        fprintf(stderr, "DB Open ERROR\n");
-        return 0;
+        printf("DB Open ERROR\n");
+        exit(1);
     }
 
     /*
@@ -118,15 +119,25 @@ int Subscription(SUB *sub_object) {
   */
     if ((ret = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
-        fprintf(stderr, "Cursor ERROR");
-        return 0;
+        printf("Cursor ERROR");
+        exit(1);
     }
 
     /* keyand data must initialize */
+    memset(&key_rn, 0, sizeof(DBT));
+    memset(&key_ri, 0, sizeof(DBT));
     memset(&key_pi, 0, sizeof(DBT));
+    memset(&key_nu, 0, sizeof(DBT));
+    memset(&key_net, 0, sizeof(DBT));
+    memset(&key_ct, 0, sizeof(DBT));
+    memset(&key_et, 0, sizeof(DBT));
+    memset(&key_lt, 0, sizeof(DBT));
+    memset(&key_ty, 0, sizeof(DBT));
+    memset(&key_nct, 0, sizeof(DBT));
 
     memset(&data_rn, 0, sizeof(DBT));
     memset(&data_ri, 0, sizeof(DBT));
+    memset(&data_pi, 0, sizeof(DBT));
     memset(&data_nu, 0, sizeof(DBT));
     memset(&data_net, 0, sizeof(DBT));
     memset(&data_ct, 0, sizeof(DBT));
@@ -136,62 +147,80 @@ int Subscription(SUB *sub_object) {
     memset(&data_nct, 0, sizeof(DBT));
 
     /* initialize the data to be the first of two duplicate records. */
-    key_pi.data = sub_object->pi;
-    key_pi.size = strlen(sub_object->pi) + 1;
-
     data_rn.data = sub_object->rn;
     data_rn.size = strlen(sub_object->rn) + 1;
+    key_rn.data = "rn";
+    key_rn.size = strlen("rn") + 1;
 
     data_ri.data = sub_object->ri;
     data_ri.size = strlen(sub_object->ri) + 1;
+    key_ri.data = "ri";
+    key_ri.size = strlen("ri") + 1;
+
+    data_pi.data = sub_object->pi;
+    data_pi.size = strlen(sub_object->pi) + 1;
+    key_pi.data = "pi";
+    key_pi.size = strlen("pi") + 1;
 
     data_nu.data = sub_object->nu;
     data_nu.size = strlen(sub_object->nu) + 1;
+    key_nu.data = "nu";
+    key_nu.size = strlen("nu") + 1;
 
-    data_net.data = &sub_object->net;
-    data_net.size = sizeof(sub_object->net) + 1;
+    data_net.data = sub_object->net;
+    data_net.size = strlen(sub_object->net) + 1;
+    key_net.data = "net";
+    key_net.size = strlen("net") + 1;
 
     data_ct.data = sub_object->ct;
     data_ct.size = strlen(sub_object->ct) + 1;
+    key_ct.data = "ct";
+    key_ct.size = strlen("ct") + 1;
 
     data_et.data = sub_object->et;
     data_et.size = strlen(sub_object->et) + 1;
+    key_et.data = "et";
+    key_et.size = strlen("et") + 1;
 
     data_lt.data = sub_object->lt;
     data_lt.size = strlen(sub_object->lt) + 1;
+    key_lt.data = "lt";
+    key_lt.size = strlen("lt") + 1;
 
     data_ty.data = &sub_object->ty;
     data_ty.size = sizeof(sub_object->ty) + 1;
+    key_ty.data = "ty";
+    key_ty.size = strlen("ty") + 1;
 
     data_nct.data = &sub_object->nct;
     data_nct.size = sizeof(sub_object->nct) + 1;
-
+    key_nct.data = "nct";
+    key_nct.size = strlen("nct") + 1;
 
     /* input DB */
-    if ((ret = dbcp->put(dbcp, &key_pi, &data_rn, DB_KEYLAST)) != 0)
+    if ((ret = dbcp->put(dbcp, &key_rn, &data_rn, DB_KEYLAST)) != 0)
         dbp->err(dbp, ret, "db->cursor");
-    if ((ret = dbcp->put(dbcp, &key_pi, &data_ri, DB_KEYLAST)) != 0)
+    if ((ret = dbcp->put(dbcp, &key_ri, &data_ri, DB_KEYLAST)) != 0)
         dbp->err(dbp, ret, "db->cursor");
-    if ((ret = dbcp->put(dbcp, &key_pi, &data_nu, DB_KEYLAST)) != 0)
+    if ((ret = dbcp->put(dbcp, &key_pi, &data_pi, DB_KEYLAST)) != 0)
         dbp->err(dbp, ret, "db->cursor");
-    if ((ret = dbcp->put(dbcp, &key_pi, &data_net, DB_KEYLAST)) != 0)
+    if ((ret = dbcp->put(dbcp, &key_nu, &data_nu, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_net, &data_net, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_ct, &data_ct, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_et, &data_et, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_lt, &data_lt, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_ty, &data_ty, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_nct, &data_nct, DB_KEYLAST)) != 0)
         dbp->err(dbp, ret, "db->cursor");
 
-    if ((ret = dbcp->put(dbcp, &key_pi, &data_ct, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "db->cursor");
-    if ((ret = dbcp->put(dbcp, &key_pi, &data_et, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "db->cursor");
-    if ((ret = dbcp->put(dbcp, &key_pi, &data_lt, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "db->cursor");
-    if ((ret = dbcp->put(dbcp, &key_pi, &data_ty, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "db->cursor");
-    if ((ret = dbcp->put(dbcp, &key_pi, &data_nct, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "db->cursor");
-
-
-    /* DB close */
     dbcp->close(dbcp);
-    dbp->close(dbp, 0); 
+    dbp->close(dbp, 0); //DB close
 
     return 1;
 }
@@ -243,8 +272,9 @@ int display(char* database)
             strncmp(key.data, "st", key.size) == 0 ||
             strncmp(key.data, "cni", key.size) == 0 ||
             strncmp(key.data, "cbs", key.size) == 0 ||
-            strncmp(key.data, "cs", key.size) == 0
-            ){
+            strncmp(key.data, "cs", key.size) == 0 ||
+            strncmp(key.data, "nct", key.size) == 0
+            ) {
             printf("%.*s : %d\n", (int)key.size, (char*)key.data, *(int*)data.data);
         }
         else if (strncmp(key.data, "rr", key.size) == 0) {
@@ -254,7 +284,6 @@ int display(char* database)
             else
                 printf("false\n");
         }
-
         else {
             printf("%.*s : %.*s\n",
                 (int)key.size, (char*)key.data,
