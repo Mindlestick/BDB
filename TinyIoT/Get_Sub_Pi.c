@@ -5,16 +5,14 @@
 #include <db.h>
 #include "onem2m.h"
 
-SubNode* Get_Sub_Pi(char* pi);
 int main() {
 
     SubNode* sub = Get_Sub_Pi("3-20220406084023203796");
     while (sub) {
-        fprintf(stderr, "%s %s %s %d %s\n", sub->rn,sub->ri,sub->nu,sub->sub_bit,sub->pi);
+        fprintf(stderr, "%s %s %s %d %s\n", sub->rn,sub->ri,sub->nu,sub->net,sub->pi);
         sub = sub->siblingRight;
     }
     
-    //printf("%d\n", (int)sizeof(SUB));
     return 0;
 }
 
@@ -64,10 +62,16 @@ SubNode* Get_Sub_Pi(char* pi){
             cnt++; // 전체 개수
         }
     }
+    if (cnt == 0) {
+        fprintf(stderr, "Data not exist\n");
+        return NULL;
+        exit(1);
+    }
 
     //오브젝트 개수 설정
-    int struct_size = 10;
+    int struct_size = 9;
     cnt = cnt / struct_size;
+
 
     SubNode* head = (SubNode*)calloc(cnt, sizeof(SubNode));
     SubNode* node;
@@ -99,7 +103,7 @@ SubNode* Get_Sub_Pi(char* pi){
                 idx++;
                 break;
             case 3:
-                node->sub_bit = *(int*)data.data;
+                node->net= *(int*)data.data;
 
                 idx++;
                 break;
@@ -117,7 +121,6 @@ SubNode* Get_Sub_Pi(char* pi){
             
         }
     }
-
 
     node->siblingLeft->siblingRight = NULL;
     free(node);

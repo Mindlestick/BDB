@@ -73,13 +73,12 @@ typedef struct {
 	char* ri;
 	char* pi;
 	char* nu;
-	char* net;
+	int net;
 	char* ct;
 	char* et;
 	char* lt;
 	int ty;
 	int nct;
-	int sub_bit;
 } SUB;
 
 typedef struct Node {
@@ -107,7 +106,7 @@ typedef struct SubNode {
 	char* pi;
 	char* rn;
 	char* ri;
-	int sub_bit;
+	int net;
 }SubNode;
 
 
@@ -180,6 +179,7 @@ Node* Get_CIN_Period(char* start_time, char* end_time);
 Node* Get_CIN_Pi(char* pi);
 
 int Subscription(SUB* sub_object);
+SubNode* Get_Sub_Pi(char* pi);
 
 //Resource Tree function
 void Free_Node(Node* node);

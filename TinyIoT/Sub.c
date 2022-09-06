@@ -18,37 +18,34 @@ int main() {
     sub1.ri = "23-2022040684653299304";
     sub1.pi = "3-20220406084023203796";
     sub1.nu = "http://223.131.176.101:3000/ct=json";
-    sub1.net = "3,1";
+    sub1.net = 1;
     sub1.ct = "20220406T084653";
     sub1.et = "20220406T084653";
     sub1.lt = "20220406T084653";
     sub1.ty = 23;
     sub1.nct = 1;
-    sub1.sub_bit = 1;
 
     sub2.rn = "sub2";
     sub2.ri = "23-2021040684653299304";
     sub2.pi = "3-20220406084023203796";
     sub2.nu = "http://223.131.176.101:3000/ct=json";
-    sub2.net = "4";
+    sub2.net = 2;
     sub2.ct = "20210406T084653";
     sub2.et = "20210406T084653";
     sub2.lt = "20210406T084653";
     sub2.ty = 23;
     sub2.nct = 1;
-    sub2.sub_bit = 2;
 
     sub3.rn = "sub3";
     sub3.ri = "23-2023040684653299304";
     sub3.pi = "3-20220406084023203796";
     sub3.nu = "http://223.131.176.101:3000/ct=json";
-    sub3.net = "2";
+    sub3.net = 3;
     sub3.ct = "20230406T084653";
     sub3.et = "20230406T084653";
     sub3.lt = "20230406T084653";
     sub3.ty = 23;
     sub3.nct = 1;
-    sub3.sub_bit = 3;
 
     Subscription(&sub1);
     Subscription(&sub2);
@@ -68,32 +65,31 @@ int Subscription(SUB *sub_object) {
     int ret;        // template value
 
     DBT key_pi;
-    DBT data_rn, data_net, data_nu, data_ri, data_ct, data_et, data_lt, data_ty, data_nct, data_sub_bit;  // storving key and real data
+    DBT data_rn, data_net, data_nu, data_ri, data_ct, data_et, data_lt, data_ty, data_nct;  // storving key and real data
 
     char* program_name = "my_prog";
 
     // if input == NULL
     if (sub_object->pi == NULL) {
         fprintf(stderr, "The key is NULL\n");
-        return -1;
+        return 0;
     }
     if (sub_object->rn == NULL) sub_object->rn = "";
     if (sub_object->ri == NULL) sub_object->ri = "";
     if (sub_object->nu == NULL) sub_object->nu = "";
-    if (sub_object->net == NULL) sub_object->net = "";
+    if (sub_object->net == '\0') sub_object->net = 1;
     if (sub_object->ct == NULL) sub_object->ct = "";
     if (sub_object->et == NULL) sub_object->et = "";
     if (sub_object->lt == NULL) sub_object->lt = "";
     if (sub_object->ty == '\0') sub_object->ty = 23;
     if (sub_object->nct == '\0') sub_object->nct = 1;
-    //if (sub_object->sub_bit == '\0') sub_object->sub_bit = 0;
 
 
     ret = db_create(&dbp, NULL, 0);
     if (ret) {
         fprintf(stderr, "db_create : %s\n", db_strerror(ret));
         fprintf(stderr, "File ERROR\n");
-        return -1;
+        return 0;
     }
 
     dbp->set_errfile(dbp, error_file_pointer);
@@ -113,7 +109,7 @@ int Subscription(SUB *sub_object) {
     if (ret) {
         dbp->err(dbp, ret, "%s", DATABASE);
         fprintf(stderr, "DB Open ERROR\n");
-        return -1;
+        return 0;
     }
 
     /*
@@ -123,7 +119,7 @@ int Subscription(SUB *sub_object) {
     if ((ret = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
         fprintf(stderr, "Cursor ERROR");
-        return -1;;
+        return 0;
     }
 
     /* keyand data must initialize */
@@ -138,7 +134,6 @@ int Subscription(SUB *sub_object) {
     memset(&data_lt, 0, sizeof(DBT));
     memset(&data_ty, 0, sizeof(DBT));
     memset(&data_nct, 0, sizeof(DBT));
-    memset(&data_sub_bit, 0, sizeof(DBT));
 
     /* initialize the data to be the first of two duplicate records. */
     key_pi.data = sub_object->pi;
@@ -153,8 +148,8 @@ int Subscription(SUB *sub_object) {
     data_nu.data = sub_object->nu;
     data_nu.size = strlen(sub_object->nu) + 1;
 
-    data_net.data = sub_object->net;
-    data_net.size = strlen(sub_object->net) + 1;
+    data_net.data = &sub_object->net;
+    data_net.size = sizeof(sub_object->net) + 1;
 
     data_ct.data = sub_object->ct;
     data_ct.size = strlen(sub_object->ct) + 1;
@@ -171,8 +166,6 @@ int Subscription(SUB *sub_object) {
     data_nct.data = &sub_object->nct;
     data_nct.size = sizeof(sub_object->nct) + 1;
 
-    data_sub_bit.data = &sub_object->sub_bit;
-    data_sub_bit.size = sizeof(sub_object->sub_bit) + 1;
 
     /* input DB */
     if ((ret = dbcp->put(dbcp, &key_pi, &data_rn, DB_KEYLAST)) != 0)
@@ -181,11 +174,9 @@ int Subscription(SUB *sub_object) {
         dbp->err(dbp, ret, "db->cursor");
     if ((ret = dbcp->put(dbcp, &key_pi, &data_nu, DB_KEYLAST)) != 0)
         dbp->err(dbp, ret, "db->cursor");
-    if ((ret = dbcp->put(dbcp, &key_pi, &data_sub_bit, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "db->cursor");
-
     if ((ret = dbcp->put(dbcp, &key_pi, &data_net, DB_KEYLAST)) != 0)
         dbp->err(dbp, ret, "db->cursor");
+
     if ((ret = dbcp->put(dbcp, &key_pi, &data_ct, DB_KEYLAST)) != 0)
         dbp->err(dbp, ret, "db->cursor");
     if ((ret = dbcp->put(dbcp, &key_pi, &data_et, DB_KEYLAST)) != 0)
