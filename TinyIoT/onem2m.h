@@ -73,7 +73,7 @@ typedef struct {
 	char* ri;
 	char* pi;
 	char* nu;
-	int net;
+	char* net;
 	char* ct;
 	char* et;
 	char* lt;
@@ -106,7 +106,7 @@ typedef struct SubNode {
 	char* pi;
 	char* rn;
 	char* ri;
-	int net;
+	char* net;
 }SubNode;
 
 

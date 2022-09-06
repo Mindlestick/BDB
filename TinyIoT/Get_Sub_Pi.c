@@ -9,7 +9,7 @@ int main() {
 
     SubNode* sub = Get_Sub_Pi("3-20220406084023203796");
     while (sub) {
-        fprintf(stderr, "%s %s %s %d %s\n", sub->rn,sub->ri,sub->nu,sub->net,sub->pi);
+        fprintf(stderr, "%s %s %s %s %s\n", sub->rn,sub->ri,sub->nu,sub->net,sub->pi);
         sub = sub->siblingRight;
     }
     
@@ -103,7 +103,8 @@ SubNode* Get_Sub_Pi(char* pi){
                 idx++;
                 break;
             case 3:
-                node->net= *(int*)data.data;
+                node->net = malloc(data.size);
+                strcpy(node->net, data.data);
 
                 idx++;
                 break;

@@ -12,12 +12,13 @@ int main() {
     SUB sub1;
     SUB sub2;
     SUB sub3;
+    SUB sub4;
 
     sub1.rn = "sub1";
     sub1.ri = "23-2022040684653299304";
     sub1.pi = "3-20220406084023203796";
     sub1.nu = "http://223.131.176.101:3000/ct=json";
-    sub1.net = "1";
+    sub1.net = 1;
     sub1.ct = "20220406T084653";
     sub1.et = "20220406T084653";
     sub1.lt = "20220406T084653";
@@ -28,7 +29,7 @@ int main() {
     sub2.ri = "23-2021040684653299304";
     sub2.pi = "3-20220406084023203796";
     sub2.nu = "http://223.131.176.101:3000/ct=json";
-    sub2.net = "2";
+    sub2.net = 2;
     sub2.ct = "20210406T084653";
     sub2.et = "20210406T084653";
     sub2.lt = "20210406T084653";
@@ -39,7 +40,7 @@ int main() {
     sub3.ri = "23-2023040684653299304";
     sub3.pi = "3-20220406084023203796";
     sub3.nu = "http://223.131.176.101:3000/ct=json";
-    sub3.net = "3";
+    sub3.net = 3;
     sub3.ct = "20230406T084653";
     sub3.et = "20230406T084653";
     sub3.lt = "20230406T084653";
@@ -76,7 +77,7 @@ int Subscription(SUB *sub_object) {
     if (sub_object->rn == NULL) sub_object->rn = "";
     if (sub_object->ri == NULL) sub_object->ri = "";
     if (sub_object->nu == NULL) sub_object->nu = "";
-    if (sub_object->net == NULL) sub_object->net = "1";
+    if (sub_object->net == '\0') sub_object->net = 1;
     if (sub_object->ct == NULL) sub_object->ct = "";
     if (sub_object->et == NULL) sub_object->et = "";
     if (sub_object->lt == NULL) sub_object->lt = "";
@@ -147,8 +148,8 @@ int Subscription(SUB *sub_object) {
     data_nu.data = sub_object->nu;
     data_nu.size = strlen(sub_object->nu) + 1;
 
-    data_net.data = sub_object->net;
-    data_net.size = strlen(sub_object->net) + 1;
+    data_net.data = &sub_object->net;
+    data_net.size = sizeof(sub_object->net) + 1;
 
     data_ct.data = sub_object->ct;
     data_ct.size = strlen(sub_object->ct) + 1;
