@@ -13,7 +13,7 @@ int main() {
     Node* sub = Get_Sub_Pi("3-20220406084023203796");
 
     while (sub) {
-        fprintf(stderr, "%s %s %s %d %s\n", sub->rn,sub->ri,sub->nu,sub->net,sub->pi);
+        fprintf(stderr, "%s %s %s %d %s %s\n", sub->rn,sub->ri,sub->nu,sub->net,sub->pi,sub->sur);
         sub = sub->siblingRight;
     }
     
@@ -67,7 +67,7 @@ Node* Get_Sub_Pi(char* pi){
     int idx = 0;
     int cnt_sub = 0;
 
-    // ¿ÀºêÁ§Æ®°¡ ¸î°³ÀÎÁö Ã£±â À§ÇÑ Ä¿¼­
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½î°³ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
@@ -75,7 +75,7 @@ Node* Get_Sub_Pi(char* pi){
     }
     while ((ret = dbcp0->get(dbcp0, &key, &data, DB_NEXT)) == 0) {
         if (strncmp(key.data, pi, key.size) == 0) {
-            cnt++; // ÀüÃ¼ °³¼ö
+            cnt++; // ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
         }
     }
     if (cnt == 0) {
@@ -84,8 +84,8 @@ Node* Get_Sub_Pi(char* pi){
         exit(1);
     }
 
-    //¿ÀºêÁ§Æ® °³¼ö ¼³Á¤
-    int struct_size = 9;
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    int struct_size = 10;
     cnt = cnt / struct_size;
     char* tmp;
 
@@ -99,8 +99,8 @@ Node* Get_Sub_Pi(char* pi){
         if (strncmp(key.data, pi, key.size) == 0) {
             switch (idx) {
             case 0:
-                node->rn = malloc(data.size);
-                strcpy(node->rn, data.data);
+                node->ri = malloc(data.size);
+                strcpy(node->ri, data.data);
 
                 node->siblingRight = (Node*)malloc(sizeof(Node));
                 node->siblingRight->siblingLeft = node;
@@ -108,8 +108,8 @@ Node* Get_Sub_Pi(char* pi){
                 idx++;
                 break;
             case 1:
-                node->ri = malloc(data.size);
-                strcpy(node->ri, data.data);
+                node->rn = malloc(data.size);
+                strcpy(node->rn, data.data);
 
                 idx++;
                 break;
@@ -130,6 +130,12 @@ Node* Get_Sub_Pi(char* pi){
                 idx++;
                 break;
             case 4:
+                node->sur = malloc(data.size);
+                strcpy(node->sur, data.data);
+
+                idx++;
+                break;
+            case 5:
                 node->pi = malloc(key.size);
                 strcpy(node->pi, key.data);
 

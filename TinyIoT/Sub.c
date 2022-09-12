@@ -25,6 +25,7 @@ int main() {
     sub1.lt = "20220406T084653";
     sub1.ty = 23;
     sub1.nct = 1;
+    sub1.sur = "test/test/test/test1";
 
     sub2.rn = "sub2";
     sub2.ri = "23-2021040684653299304";
@@ -36,6 +37,7 @@ int main() {
     sub2.lt = "20210406T084653";
     sub2.ty = 23;
     sub2.nct = 1;
+    sub2.sur = "test/test/test/test2";
 
     sub3.rn = "sub3";
     sub3.ri = "23-2023040684653299304";
@@ -47,6 +49,7 @@ int main() {
     sub3.lt = "20230406T084653";
     sub3.ty = 23;
     sub3.nct = 1;
+    sub3.sur = "test/test/test/test3";
 
     Subscription(&sub1);
     Subscription(&sub2);
@@ -67,7 +70,8 @@ int Subscription(SUB *sub_object) {
     int ret;        // template value
 
     DBT key_pi;
-    DBT data_rn, data_net, data_nu, data_ri, data_ct, data_et, data_lt, data_ty, data_nct;  // storving key and real data
+    DBT data_rn, data_net, data_nu, data_ri, data_ct,
+     data_et, data_lt, data_ty, data_nct, data_sur;  // storving key and real data
 
     char* program_name = "my_prog";
 
@@ -85,6 +89,7 @@ int Subscription(SUB *sub_object) {
     if (sub_object->lt == NULL) sub_object->lt = "";
     if (sub_object->ty == '\0') sub_object->ty = 23;
     if (sub_object->nct == '\0') sub_object->nct = 1;
+    if (sub_object->sur == NULL) sub_object->sur = "";    
 
 
     ret = db_create(&dbp, NULL, 0);
@@ -136,6 +141,7 @@ int Subscription(SUB *sub_object) {
     memset(&data_lt, 0, sizeof(DBT));
     memset(&data_ty, 0, sizeof(DBT));
     memset(&data_nct, 0, sizeof(DBT));
+    memset(&data_sur, 0, sizeof(DBT));
 
     /* initialize the data to be the first of two duplicate records. */
     key_pi.data = sub_object->pi;
@@ -168,16 +174,22 @@ int Subscription(SUB *sub_object) {
     data_nct.data = &sub_object->nct;
     data_nct.size = sizeof(sub_object->nct) + 1;
 
+    data_sur.data = sub_object->sur;
+    data_sur.size = strlen(sub_object->sur) + 1;
+
 
     /* input DB */
-    if ((ret = dbcp->put(dbcp, &key_pi, &data_rn, DB_KEYLAST)) != 0)
-        dbp->err(dbp, ret, "db->cursor");
     if ((ret = dbcp->put(dbcp, &key_pi, &data_ri, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_pi, &data_rn, DB_KEYLAST)) != 0)
         dbp->err(dbp, ret, "db->cursor");
     if ((ret = dbcp->put(dbcp, &key_pi, &data_nu, DB_KEYLAST)) != 0)
         dbp->err(dbp, ret, "db->cursor");
     if ((ret = dbcp->put(dbcp, &key_pi, &data_net, DB_KEYLAST)) != 0)
         dbp->err(dbp, ret, "db->cursor");
+    if ((ret = dbcp->put(dbcp, &key_pi, &data_sur, DB_KEYLAST)) != 0)
+        dbp->err(dbp, ret, "db->cursor");
+
 
     if ((ret = dbcp->put(dbcp, &key_pi, &data_ct, DB_KEYLAST)) != 0)
         dbp->err(dbp, ret, "db->cursor");
@@ -189,6 +201,7 @@ int Subscription(SUB *sub_object) {
         dbp->err(dbp, ret, "db->cursor");
     if ((ret = dbcp->put(dbcp, &key_pi, &data_nct, DB_KEYLAST)) != 0)
         dbp->err(dbp, ret, "db->cursor");
+
 
 
     /* DB close */
