@@ -56,7 +56,7 @@ AE* Delete_AE(char* ri) {
 
     int idx = 0;
     int flag = 0;
-    // ¸î¹øÂ° AEÀÎÁö Ã£±â À§ÇÑ Ä¿¼­
+    // ï¿½ï¿½ï¿½Â° AEï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
@@ -81,7 +81,7 @@ AE* Delete_AE(char* ri) {
         exit(1);
     }
 
-    // ÇØ´ç index¿¡ ¼ø¼­ÀÇ °ª Ã£¾Æ Áö¿ò
+    // ï¿½Ø´ï¿½ indexï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     int cnt_rn = 0;
     int cnt_pi = 0;
     int cnt_ty = 0;

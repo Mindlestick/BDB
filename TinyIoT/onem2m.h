@@ -175,6 +175,9 @@ Node* Get_CIN_Pi(char* pi);
 
 int Subscription(SUB* sub_object);
 Node* Get_Sub_Pi(char* pi);
+SUB* Get_Sub(char* ri);
+SUB* Sub_Delete(SUB* sub);
+SUB* Sub_Update(SUB *sub);
 
 //Resource Tree function
 void Free_Node(Node* node);

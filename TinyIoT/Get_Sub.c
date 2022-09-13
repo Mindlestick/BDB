@@ -148,5 +148,13 @@ SUB* Get_Sub(char* ri) {
         exit(0);
     }
 
+        /* Cursors must be closed */
+    if (dbcp0 != NULL)
+        dbcp0->close(dbcp0);
+    if (dbcp != NULL)
+        dbcp->close(dbcp);
+    if (dbp != NULL)
+        dbp->close(dbp, 0);
+
     return new_sub;
 }
