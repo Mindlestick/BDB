@@ -85,7 +85,7 @@ AE* DB_Update_AE(AE* ae) {
     int cnt = 0;
     int idx = 0;
 
-    // ¼öÁ¤ÇÒ ¿ÀºêÁ§Æ®°¡ ¸î¹øÂ°ÀÎÁö Ã£±â À§ÇÑ Ä¿¼­
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
@@ -95,13 +95,13 @@ AE* DB_Update_AE(AE* ae) {
         if (strncmp(key.data, "ri", key.size) == 0) {
             idx++;
             if (strncmp(data.data, ae->ri, data.size) == 0) {
-                cnt++; // updateÇÒ AEÀÇ ri°¡ Á¸ÀçÇÏ¸é cnt > 0
+                cnt++; // updateï¿½ï¿½ AEï¿½ï¿½ riï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ cnt > 0
                 break;
             }
         }
     }
 
-    // ÀÎÀÚ·Î µé¾î¿Â ri°¡ Á¸ÀçÇÏÁö ¾ÊÀ¸¸é NULL ¹ÝÈ¯
+    // ï¿½ï¿½ï¿½Ú·ï¿½ ï¿½ï¿½ï¿½ï¿½ riï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ NULL ï¿½ï¿½È¯
     if (cnt == 0) {
         fprintf(stderr, "Data not exist\n");
         return NULL;

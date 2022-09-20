@@ -46,22 +46,22 @@ char* Get_LocalTime() {
 }
 
 Node* Get_CIN_Period(char* start_time, char* end_time) {
-    //start_time°ú end_timeÀº [20220807T215215] ÇüÅÂ
+    //start_timeï¿½ï¿½ end_timeï¿½ï¿½ [20220807T215215] ï¿½ï¿½ï¿½ï¿½
     fprintf(stderr, "<%s ~ %s>\n",start_time, end_time);
 
-    // start_ri¿Í end_ri´Â [4-20220808T113154] ÇüÅÂ
-    char* start_ri = (char*)calloc(18, sizeof(char));
-    char* end_ri = (char*)calloc(18, sizeof(char));
+    // start_riï¿½ï¿½ end_riï¿½ï¿½ [4-20220808T113154] ï¿½ï¿½ï¿½ï¿½
+    char* start_ct = (char*)calloc(16, sizeof(char));
+    char* end_ct = (char*)calloc(16, sizeof(char));
 
-    strcat(start_ri, "4-");
-    strcat(start_ri, start_time);
+    //strcat(start_ri, "4-");
+    strcat(start_ct, start_time);
 
-    strcat(end_ri, "4-");
-    strcat(end_ri, end_time);
+    //strcat(end_ri, "4-");
+    strcat(end_ct, end_time);
 
-    //fprintf(stderr, "<%s ~ %s>\n", start_ri, end_ri);
+    //fprintf(stderr, "<%s ~ %s>\n", start_ct, end_ct);
 
-    // DB °ü·Ã ÇÔ¼ö
+    // DB ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     char* database = "CIN.db";
 
     DB* dbp;
@@ -96,7 +96,7 @@ Node* Get_CIN_Period(char* start_time, char* end_time) {
     int idx = 0;
     int* arr = NULL;
 
-    // ¿ÀºêÁ§Æ®°¡ ¸î°³ÀÎÁö Ã£±â À§ÇÑ Ä¿¼­
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½î°³ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
@@ -104,7 +104,7 @@ Node* Get_CIN_Period(char* start_time, char* end_time) {
     }
     while ((ret = dbcp0->get(dbcp0, &key, &data, DB_NEXT)) == 0) {
         if (strncmp(key.data, "ri", key.size) == 0) {
-            cnt++; // ¿ÀºêÁ§Æ® °³¼ö
+            cnt++; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         }
     }
     if (cnt == 0) {
@@ -114,30 +114,33 @@ Node* Get_CIN_Period(char* start_time, char* end_time) {
     }
     //fprintf(stderr, "<%d>\n", cnt);
 
-    //¿ÀºêÁ§Æ® °³¼ö¸¸Å­ µ¿ÀûÇÒ´ç
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½Ò´ï¿½
     arr = (int*)malloc(sizeof(int) * cnt);
     for (int i = 0; i < cnt; i++) arr[i] = 0;
 
-    // ÇØ´çÇÏ´Â ¿ÀºêÁ§Æ®°¡ ¸î°³ÀÎÁö Ã£±â À§ÇÑ Ä¿¼­
+    // ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½î°³ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½
     DBC* dbcp1;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp1, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
         exit(1);
     }
-    // ÇØ´çÇÏ´Â ¿ÀºêÁ§Æ® ¹è¿­¿¡ 1·Î Ç¥½Ã 0 1 1 1 0 <- µÎ¹øÂ° ¼¼¹øÂ° ³×¹øÂ° ¿ÀºêÁ§Æ®°¡ ÇØ´ç
+    // ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½è¿­ï¿½ï¿½ 1ï¿½ï¿½ Ç¥ï¿½ï¿½ 0 1 1 1 0 <- ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½ï¿½Â° ï¿½×¹ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ø´ï¿½
     while ((ret = dbcp1->get(dbcp1, &key, &data, DB_NEXT)) == 0) {
-        if (strncmp(key.data, "ri", key.size) == 0) {
-            //9 : date, 16: time
-            if (strncmp(start_ri, data.data, 16) <= 0 && strncmp(end_ri, data.data, 16) >= 0)
+        if (strncmp(key.data, "ct", key.size) == 0) {
+            //0-7 : date, 8-14: time
+            // printf("%s\n",(char*)data.data);
+            if (strncmp(start_ct, data.data, 14) <= 0 && strncmp(end_ct, data.data, 14) >= 0)
                 arr[idx] = 1;
             idx++;
         }
     }
-    //ÇØ´çÇÏ´Â ¿ÀºêÁ§Æ®°¡ ¾øÀ½
+
+    //ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     int sum = 0;
     for (int i = 0; i < cnt; i++) {
         sum += arr[i];
     }
+
     if (sum == 0) {
         fprintf(stderr, "Find data not exist\n");
         return NULL;
