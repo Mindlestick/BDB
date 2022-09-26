@@ -8,16 +8,38 @@
 int main() {
 
     AE ae_before;
-    ae_before.rn = "Sensor1_updateeee";
+    ae_before.rn = "Sensor2_updateeee";
     ae_before.ri = "TAE2";
+    ae_before.api = "tinyProject2_update";
 
-    DB_Update_AE(&ae_before);
-    display("AE.db");
+    int flag = DB_Update_AE(&ae_before);
+    if(flag)
+        display("AE.db");
 
     return 0;
 }
 
 int DB_Update_AE(AE* ae) {
+
+    /* ri NULL ERROR*/
+    if(ae->ri==NULL){
+        fprintf(stderr,"ri NULL ERROR\n");
+        return 0;
+    }
+
+
+    /* Not NULL:0, NULL:1 */
+    int rn_f=0, pi_f=0, ct_f=0, lt_f=0, et_f=0, api_f=0, aei_f=0, ty_f=0, rr_f=0;
+
+    if(ae->rn==NULL) rn_f=1;
+    if(ae->pi==NULL) pi_f=1;    
+    if(ae->ct==NULL) ct_f=1;
+    if(ae->lt==NULL) lt_f=1;
+    if(ae->et==NULL) et_f=1;
+    if(ae->api==NULL) api_f=1;
+    if(ae->aei==NULL) aei_f=1;
+    if(ae->ty==0) ty_f=1;  
+    if(ae->rr==false) rr_f=1;    
 
     char* database = "AE.db";
 
@@ -54,7 +76,6 @@ int DB_Update_AE(AE* ae) {
     int cnt = 0;
     int idx = 0;
 
-    // ������ ������Ʈ�� ���°���� ã�� ���� Ŀ��
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
@@ -65,31 +86,23 @@ int DB_Update_AE(AE* ae) {
         if (strncmp(key.data, "ri", key.size) == 0) {
             idx++;
             if (strncmp(data.data, ae->ri, data.size) == 0) {
-                cnt++; // update�� AE�� ri�� �����ϸ� cnt > 0
+                cnt++; 
                 break;
             }
         }
     }
 
-    // ���ڷ� ���� ri�� �������� ������ NULL ��ȯ
     if (cnt == 0) {
         fprintf(stderr, "Data not exist\n");
         return 0;
         exit(1);
     }
 
-    int cnt_rn = 0;
-    int cnt_pi = 0;
-    int cnt_ty = 0;
-    int cnt_et = 0;
-    int cnt_lt = 0;
-    int cnt_ct = 0;
-    int cnt_api = 0;
-    int cnt_aei = 0;
-    int cnt_rr = 0;
+    int cnt_rn = 0,cnt_pi = 0,cnt_et = 0,cnt_lt = 0,cnt_ct = 0,cnt_api = 0,cnt_aei = 0;
+    int cnt_rr = 0,cnt_ty = 0;
     
     while ((ret = dbcp->get(dbcp, &key, &data, DB_NEXT)) == 0) {
-        if (strncmp(key.data, "rn", key.size) == 0) {
+        if (strncmp(key.data, "rn", key.size) == 0 && rn_f==0) {
             cnt_rn++;
             if (cnt_rn == idx) {
                 data.size = strlen(ae->rn) + 1;
@@ -97,7 +110,7 @@ int DB_Update_AE(AE* ae) {
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
-        if (strncmp(key.data, "pi", key.size) == 0) {
+        if (strncmp(key.data, "pi", key.size) == 0 && pi_f==0) {
             cnt_pi++;
             if (cnt_pi == idx) {
                 data.size = strlen(ae->pi) + 1;
@@ -105,7 +118,7 @@ int DB_Update_AE(AE* ae) {
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
-        if (strncmp(key.data, "api", key.size) == 0) {
+        if (strncmp(key.data, "api", key.size) == 0 && api_f==0) {
             cnt_api++;
             if (cnt_api == idx) {
                 data.size = strlen(ae->api) + 1;
@@ -113,7 +126,7 @@ int DB_Update_AE(AE* ae) {
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
-        if (strncmp(key.data, "aei", key.size) == 0) {
+        if (strncmp(key.data, "aei", key.size) == 0 && aei_f==0) {
             cnt_aei++;
             if (cnt_aei == idx) {
                 data.size = strlen(ae->aei) + 1;
@@ -121,7 +134,7 @@ int DB_Update_AE(AE* ae) {
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
-        if (strncmp(key.data, "et", key.size) == 0) {
+        if (strncmp(key.data, "et", key.size) == 0 && et_f==0) {
             cnt_et++;
             if (cnt_et == idx) {
                 data.size = strlen(ae->et) + 1;
@@ -129,7 +142,7 @@ int DB_Update_AE(AE* ae) {
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
-        if (strncmp(key.data, "lt", key.size) == 0) {
+        if (strncmp(key.data, "lt", key.size) == 0 && lt_f==0) {
             cnt_lt++;
             if (cnt_lt == idx) {
                 data.size = strlen(ae->lt) + 1;
@@ -137,7 +150,7 @@ int DB_Update_AE(AE* ae) {
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
-        if (strncmp(key.data, "ct", key.size) == 0) {
+        if (strncmp(key.data, "ct", key.size) == 0 && ct_f==0) {
             cnt_ct++;
             if (cnt_ct == idx) {
                 data.size = strlen(ae->ct) + 1;
@@ -145,14 +158,14 @@ int DB_Update_AE(AE* ae) {
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
-        if (strncmp(key.data, "ty", key.size) == 0) {
+        if (strncmp(key.data, "ty", key.size) == 0 && ty_f==0) {
             cnt_ty++;
             if (cnt_ty == idx) {
                 *(int*)data.data = ae->ty;
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
-        if (strncmp(key.data, "rr", key.size) == 0) {
+        if (strncmp(key.data, "rr", key.size) == 0 && rr_f==0) {
             cnt_rr++;
             if (cnt_rr == idx) {
                 *(bool*)data.data = ae->rr;
@@ -165,12 +178,12 @@ int DB_Update_AE(AE* ae) {
         dbp->err(dbp, ret, "DBcursor->get");
         printf("Cursor ERROR\n");
         return 0;
-        exit(0);
     }
 
+    /* DB close */
     dbcp->close(dbcp);
     dbcp->close(dbcp0);
-    dbp->close(dbp, 0); //DB close
+    dbp->close(dbp, 0); 
 
     return 1;
 }
