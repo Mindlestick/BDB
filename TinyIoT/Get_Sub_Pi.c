@@ -8,6 +8,7 @@
 
 #include "onem2m.h"
 
+//-lm
 int NetToBit(char* net);
 int main() {
     Node* sub = Get_Sub_Pi("3-20220406084023203796");

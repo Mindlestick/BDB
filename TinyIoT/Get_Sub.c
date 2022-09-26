@@ -5,19 +5,19 @@
 #include <db.h>
 #include "onem2m.h"
 
-SUB* Get_Sub(char* ri);
+Sub* Get_Sub(char* ri);
 int main() {
-    SUB *sub1 = Get_Sub("23-2023040684653299304"); 
+    Sub *sub1 = Get_Sub("23-2022040684653299304"); 
 
     printf("%s\n",sub1->sur);
     return 0;
 }
 
-SUB* Get_Sub(char* ri) {
+Sub* Get_Sub(char* ri) {
     char* database = "SUB.db";
 
     //store AE
-    SUB* new_sub = (SUB*)malloc(sizeof(SUB));
+    Sub* new_sub = (Sub*)malloc(sizeof(Sub));
 
     DB* dbp;
     DBC* dbcp;

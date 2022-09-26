@@ -8,49 +8,16 @@
 int main() {
 
     AE ae_before;
-    ae_before.rn = "Sensor1_update";
-    ae_before.ty = 3;
-    ae_before.pi = "5-20191210093452845";
+    ae_before.rn = "Sensor1_updateeee";
     ae_before.ri = "TAE2";
-    ae_before.ct = "20220513T083900";
-    ae_before.lt = "20220513T083900";
-    ae_before.et = "20240513T083900";
-    ae_before.api = "tinyProject1_update";
-    ae_before.rr = false;
-    ae_before.aei = "TAE1";
 
-    AE *ae_after = DB_Update_AE(&ae_before);
+    DB_Update_AE(&ae_before);
     display("AE.db");
 
     return 0;
 }
 
-void Free_Node(Node* node) {
-    free(node->ri);
-    free(node->rn);
-    free(node->pi);
-    free(node);
-}
-Node* Create_Node(char* ri, char* rn, char* pi, ObjectType ty) {
-    Node* node = (Node*)malloc(sizeof(Node));
-    node->rn = (char*)malloc(sizeof(rn));
-    node->ri = (char*)malloc(sizeof(ri));
-    node->pi = (char*)malloc(sizeof(pi));
-    strcpy(node->rn, rn);
-    strcpy(node->ri, ri);
-    strcpy(node->pi, pi);
-    node->parent = NULL;
-    node->child = NULL;
-    node->siblingLeft = NULL;
-    node->siblingRight = NULL;
-    node->ty = ty;
-    if (strcmp(rn, "") && strcmp(rn, "TinyIoT")) {
-        fprintf(stderr, "\nCreate Tree Node\n[rn] %s\n[ri] %s\n", node->rn, node->ri);
-    }
-    return node;
-}
-
-AE* DB_Update_AE(AE* ae) {
+int DB_Update_AE(AE* ae) {
 
     char* database = "AE.db";
 
@@ -69,12 +36,14 @@ AE* DB_Update_AE(AE* ae) {
     ret = dbp->open(dbp, NULL, database, NULL, DB_BTREE, DB_CREATE, 0664);
     if (ret) {
         dbp->err(dbp, ret, "%s", database);
+        return 0;
         exit(1);
     }
 
     /* Acquire a cursor for the database. */
     if ((ret = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
+        return 0;
         exit(1);
     }
 
@@ -89,6 +58,7 @@ AE* DB_Update_AE(AE* ae) {
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
+        return 0;
         exit(1);
     }
     while ((ret = dbcp0->get(dbcp0, &key, &data, DB_NEXT)) == 0) {
@@ -104,7 +74,7 @@ AE* DB_Update_AE(AE* ae) {
     // ���ڷ� ���� ri�� �������� ������ NULL ��ȯ
     if (cnt == 0) {
         fprintf(stderr, "Data not exist\n");
-        return NULL;
+        return 0;
         exit(1);
     }
 
@@ -194,6 +164,7 @@ AE* DB_Update_AE(AE* ae) {
     if (ret != DB_NOTFOUND) {
         dbp->err(dbp, ret, "DBcursor->get");
         printf("Cursor ERROR\n");
+        return 0;
         exit(0);
     }
 
@@ -201,7 +172,7 @@ AE* DB_Update_AE(AE* ae) {
     dbcp->close(dbcp0);
     dbp->close(dbp, 0); //DB close
 
-    return ae;
+    return 1;
 }
 
 int display(char* database)

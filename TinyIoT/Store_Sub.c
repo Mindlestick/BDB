@@ -11,9 +11,9 @@
 
 int main() {
 
-    SUB sub1;
-    SUB sub2;
-    SUB sub3;
+    Sub sub1;
+    Sub sub2;
+    Sub sub3;
 
     sub1.rn = "sub1";
     sub1.ri = "23-2022040684653299304";
@@ -51,16 +51,16 @@ int main() {
     sub3.nct = 1;
     sub3.sur = "test/test/test/test3";
 
-    Subscription(&sub1);
-    Subscription(&sub2);
-    Subscription(&sub3);
+    Store_Sub(&sub1);
+    Store_Sub(&sub2);
+    Store_Sub(&sub3);
 
     display("SUB.db");
 
     return 0;
 }
 
-int Subscription(SUB *sub_object) {
+int Store_Sub(Sub *sub_object) {
     char* DATABASE = "SUB.db";
 
     DB* dbp;    // db handle

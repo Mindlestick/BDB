@@ -108,7 +108,7 @@ int Store_AE(AE* ae_object) {
     if (ret) {
         dbp->err(dbp, ret, "%s", DATABASE);
         fprintf(stderr, "DB Open ERROR\n");
-        exit(1);
+        return 0;
     }
     
     /*
@@ -118,7 +118,7 @@ int Store_AE(AE* ae_object) {
     if ((ret = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
         fprintf(stderr, "Cursor ERROR");
-        exit(1);
+        return 0;
     }
 
     /* keyand data must initialize */

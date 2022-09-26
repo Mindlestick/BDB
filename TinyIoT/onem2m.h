@@ -80,7 +80,7 @@ typedef struct {
 	char* sur;
 	int ty;
 	int nct;
-} SUB;
+} Sub;
 
 typedef struct Node {
 	struct Node* parent;
@@ -149,19 +149,23 @@ int Store_CSE(CSE* cse_object);
 int Store_AE(AE* ae_object);
 int Store_CNT(CNT* cnt_object);
 int Store_CIN(CIN* cin_object);
+int Store_Sub(Sub* sub_object);
 
 CSE* Get_CSE();
 AE* Get_AE(char* ri);
 CNT* Get_CNT(char* ri);
 CIN* Get_CIN(char* ri);
+Sub* Get_Sub(char* ri);
 
-AE* DB_Update_AE(AE* ae);
-CNT* DB_Update_CNT(CNT* cnt_object);
+int DB_Update_AE(AE* ae);
+int DB_Update_CNT(CNT* cnt_object);
+int Update_Sub(Sub *sub);
 
-CSE* Delete_CSE(char* ri);
-AE* Delete_AE(char* ri);
-CNT* Delete_CNT(char* ri);
-CIN* Delete_CIN(char* ri);
+int Delete_CSE(char* ri);
+int Delete_AE(char* ri);
+int Delete_CNT(char* ri);
+int Delete_CIN(char* ri);
+int Delete_Sub(char *ri);
 
 Node* Get_All_CSE();
 Node* Get_All_AE();
@@ -172,12 +176,10 @@ char* Get_LocalTime();
 Node* Get_CIN_Period(char* start_time, char* end_time);
 
 Node* Get_CIN_Pi(char* pi);
-
-int Subscription(SUB* sub_object);
 Node* Get_Sub_Pi(char* pi);
-SUB* Get_Sub(char* ri);
-SUB* Sub_Delete(SUB* sub);
-SUB* Sub_Update(SUB *sub);
+
+
+
 
 //Resource Tree function
 void Free_Node(Node* node);

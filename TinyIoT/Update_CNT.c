@@ -19,39 +19,14 @@ int main() {
     cnt_before.cbs = -1;
     cnt_before.st = -1;
 
-    CNT* cnt_after = DB_Update_CNT(&cnt_before);
+    DB_Update_CNT(&cnt_before);
     display("CNT.db");
 
 
     return 0;
 }
 
-void Free_Node(Node* node) {
-    free(node->ri);
-    free(node->rn);
-    free(node->pi);
-    free(node);
-}
-Node* Create_Node(char* ri, char* rn, char* pi, ObjectType ty) {
-    Node* node = (Node*)malloc(sizeof(Node));
-    node->rn = (char*)malloc(sizeof(rn));
-    node->ri = (char*)malloc(sizeof(ri));
-    node->pi = (char*)malloc(sizeof(pi));
-    strcpy(node->rn, rn);
-    strcpy(node->ri, ri);
-    strcpy(node->pi, pi);
-    node->parent = NULL;
-    node->child = NULL;
-    node->siblingLeft = NULL;
-    node->siblingRight = NULL;
-    node->ty = ty;
-    if (strcmp(rn, "") && strcmp(rn, "TinyIoT")) {
-        fprintf(stderr, "\nCreate Tree Node\n[rn] %s\n[ri] %s\n", node->rn, node->ri);
-    }
-    return node;
-}
-
-CNT* DB_Update_CNT(CNT* cnt_object) {
+int DB_Update_CNT(CNT* cnt_object) {
 
     char* database = "CNT.db";
 
@@ -76,6 +51,7 @@ CNT* DB_Update_CNT(CNT* cnt_object) {
     /* Acquire a cursor for the database. */
     if ((ret = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
+        return 0;
         exit(1);
     }
 
@@ -86,26 +62,27 @@ CNT* DB_Update_CNT(CNT* cnt_object) {
     int cnt = 0;
     int idx = 0;
 
-    // ¼öÁ¤ÇÒ ¿ÀºêÁ§Æ®°¡ ¸î¹øÂ°ÀÎÁö Ã£±â À§ÇÑ Ä¿¼­
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
+        return 0;
         exit(1);
     }
     while ((ret = dbcp0->get(dbcp0, &key, &data, DB_NEXT)) == 0) {
         if (strncmp(key.data, "ri", key.size) == 0) {
             idx++;
             if (strncmp(data.data, cnt_object->ri, data.size) == 0) {
-                cnt++; // updateÇÒ CNTÀÇ ri°¡ Á¸ÀçÇÏ¸é cnt > 0
+                cnt++; // updateï¿½ï¿½ CNTï¿½ï¿½ riï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ cnt > 0
                 break;
             }
         }
     }
 
-    // ÀÎÀÚ·Î µé¾î¿Â ri°¡ Á¸ÀçÇÏÁö ¾ÊÀ¸¸é NULL ¹İÈ¯
+    // ï¿½ï¿½ï¿½Ú·ï¿½ ï¿½ï¿½ï¿½ï¿½ riï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ NULL ï¿½ï¿½È¯
     if (cnt == 0) {
         fprintf(stderr, "Data not exist\n");
-        return NULL;
+        return 0;
         exit(1);
     }
 
@@ -195,6 +172,7 @@ CNT* DB_Update_CNT(CNT* cnt_object) {
     if (ret != DB_NOTFOUND) {
         dbp->err(dbp, ret, "DBcursor->get");
         printf("Cursor ERROR\n");
+        return 0;
         exit(0);
     }
 
@@ -202,7 +180,7 @@ CNT* DB_Update_CNT(CNT* cnt_object) {
     dbcp->close(dbcp0);
     dbp->close(dbp, 0); //DB close
 
-    return cnt_object;
+    return 1;
 }
 
 int display(char* database)

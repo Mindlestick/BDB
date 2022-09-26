@@ -7,11 +7,11 @@
 #include "onem2m.h"
 double start, end;
 
-int Subscription_2(SUB* sub_object);
+int Subscription_2(Sub* sub_object);
 int main() {
-    SUB sub1;
-    SUB sub2;
-    SUB sub3;
+    Sub sub1;
+    Sub sub2;
+    Sub sub3;
 
     sub1.rn = "sub1";
     sub1.ri = "23-2022040684653299304";
@@ -59,7 +59,7 @@ int main() {
     return 0;
 }
 
-int Subscription_2(SUB* sub_object) {
+int Subscription_2(Sub* sub_object) {
     char* DATABASE = "SUB_2.db";
 
     DB* dbp;    // db handle

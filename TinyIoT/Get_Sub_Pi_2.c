@@ -7,11 +7,11 @@
 #include "onem2m.h"
 double start, end;
 
-SubNode* Get_Sub_Pi_2(char* pi);
+Node* Get_Sub_Pi_2(char* pi);
 int main() {
 
     start = (double)clock() / CLOCKS_PER_SEC;
-    SubNode* sub = Get_Sub_Pi_2("3-20220406084023203796");
+    Node* sub = Get_Sub_Pi_2("3-20220406084023203796");
 
     end = (((double)clock()) / CLOCKS_PER_SEC);
     printf("Noti2_time :%lf\n", (end - start));
@@ -28,7 +28,7 @@ int main() {
     return 0;
 }
 
-SubNode* Get_Sub_Pi_2(char* pi) {
+Node* Get_Sub_Pi_2(char* pi) {
     char* database = "SUB_2.db";
 
     DB* dbp;
@@ -63,7 +63,7 @@ SubNode* Get_Sub_Pi_2(char* pi) {
     int idx = 0;
     int* arr = NULL;
 
-    // ¿ÀºêÁ§Æ®°¡ ¸î°³ÀÎÁö Ã£±â À§ÇÑ Ä¿¼­
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½î°³ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½
     DBC* dbcp0;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp0, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
@@ -71,7 +71,7 @@ SubNode* Get_Sub_Pi_2(char* pi) {
     }
     while ((ret = dbcp0->get(dbcp0, &key, &data, DB_NEXT)) == 0) {
         if (strncmp(key.data, "pi", key.size) == 0 && strncmp(data.data, pi, data.size) == 0) {
-            cnt++; // ÀüÃ¼ °³¼ö
+            cnt++; // ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
         }
     }
     if (cnt == 0) {
@@ -80,17 +80,17 @@ SubNode* Get_Sub_Pi_2(char* pi) {
         exit(1);
     }
 
-    //¿ÀºêÁ§Æ® °³¼ö¸¸Å­ µ¿ÀûÇÒ´ç
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½Ò´ï¿½
     arr = (int*)malloc(sizeof(int) * cnt);
     for (int i = 0; i < cnt; i++) arr[i] = 0;
     
-    // ÇØ´çÇÏ´Â ¿ÀºêÁ§Æ®°¡ ¸î°³ÀÎÁö Ã£±â À§ÇÑ Ä¿¼­
+    // ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½î°³ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½
     DBC* dbcp1;
     if ((ret = dbp->cursor(dbp, NULL, &dbcp1, 0)) != 0) {
         dbp->err(dbp, ret, "DB->cursor");
         exit(1);
     }
-    // ÇØ´çÇÏ´Â ¿ÀºêÁ§Æ® ¹è¿­¿¡ 1·Î Ç¥½Ã
+    // ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½è¿­ï¿½ï¿½ 1ï¿½ï¿½ Ç¥ï¿½ï¿½
     while ((ret = dbcp1->get(dbcp1, &key, &data, DB_NEXT)) == 0) {
         if (strncmp(key.data, "pi", key.size) == 0) {
             if (strncmp(data.data, pi, data.size) == 0 )
@@ -99,12 +99,12 @@ SubNode* Get_Sub_Pi_2(char* pi) {
         }
     }
 
-    SubNode* head = (SubNode*)calloc(cnt, sizeof(SubNode));
-    SubNode* node_net;
-    SubNode* node_nu;
-    SubNode* node_pi;
-    SubNode* node_ri;
-    SubNode* node_rn;
+    Node* head = (Node*)calloc(cnt, sizeof(Node));
+    Node* node_net;
+    Node* node_nu;
+    Node* node_pi;
+    Node* node_ri;
+    Node* node_rn;
 
     node_rn = node_ri = node_nu = node_net = node_pi = head;
     
@@ -114,7 +114,7 @@ SubNode* Get_Sub_Pi_2(char* pi) {
             if (arr[idx % cnt]) {
                 node_net->net = malloc(data.size);
                 strcpy(node_net->net, data.data);
-                node_net->siblingRight = (SubNode*)malloc(sizeof(SubNode));
+                node_net->siblingRight = (Node*)malloc(sizeof(Node));
                 node_net->siblingRight->siblingLeft = node_net;
                 node_net = node_net->siblingRight;
             }
