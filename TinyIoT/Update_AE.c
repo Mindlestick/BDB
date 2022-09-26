@@ -19,27 +19,26 @@ int main() {
     return 0;
 }
 
-int DB_Update_AE(AE* ae) {
+int DB_Update_AE(AE* ae_object) {
 
     /* ri NULL ERROR*/
-    if(ae->ri==NULL){
+    if(ae_object->ri==NULL){
         fprintf(stderr,"ri NULL ERROR\n");
         return 0;
     }
 
-
     /* Not NULL:0, NULL:1 */
     int rn_f=0, pi_f=0, ct_f=0, lt_f=0, et_f=0, api_f=0, aei_f=0, ty_f=0, rr_f=0;
 
-    if(ae->rn==NULL) rn_f=1;
-    if(ae->pi==NULL) pi_f=1;    
-    if(ae->ct==NULL) ct_f=1;
-    if(ae->lt==NULL) lt_f=1;
-    if(ae->et==NULL) et_f=1;
-    if(ae->api==NULL) api_f=1;
-    if(ae->aei==NULL) aei_f=1;
-    if(ae->ty==0) ty_f=1;  
-    if(ae->rr==false) rr_f=1;    
+    if(ae_object->rn==NULL) rn_f=1;
+    if(ae_object->pi==NULL) pi_f=1;    
+    if(ae_object->ct==NULL) ct_f=1;
+    if(ae_object->lt==NULL) lt_f=1;
+    if(ae_object->et==NULL) et_f=1;
+    if(ae_object->api==NULL) api_f=1;
+    if(ae_object->aei==NULL) aei_f=1;
+    if(ae_object->ty==0) ty_f=1;  
+    if(ae_object->rr==false) rr_f=1;      
 
     char* database = "AE.db";
 
@@ -85,7 +84,7 @@ int DB_Update_AE(AE* ae) {
     while ((ret = dbcp0->get(dbcp0, &key, &data, DB_NEXT)) == 0) {
         if (strncmp(key.data, "ri", key.size) == 0) {
             idx++;
-            if (strncmp(data.data, ae->ri, data.size) == 0) {
+            if (strncmp(data.data, ae_object->ri, data.size) == 0) {
                 cnt++; 
                 break;
             }
@@ -105,70 +104,70 @@ int DB_Update_AE(AE* ae) {
         if (strncmp(key.data, "rn", key.size) == 0 && rn_f==0) {
             cnt_rn++;
             if (cnt_rn == idx) {
-                data.size = strlen(ae->rn) + 1;
-                strcpy(data.data, ae->rn);
+                data.size = strlen(ae_object->rn) + 1;
+                strcpy(data.data, ae_object->rn);
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
         if (strncmp(key.data, "pi", key.size) == 0 && pi_f==0) {
             cnt_pi++;
             if (cnt_pi == idx) {
-                data.size = strlen(ae->pi) + 1;
-                strcpy(data.data, ae->pi);
+                data.size = strlen(ae_object->pi) + 1;
+                strcpy(data.data, ae_object->pi);
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
         if (strncmp(key.data, "api", key.size) == 0 && api_f==0) {
             cnt_api++;
             if (cnt_api == idx) {
-                data.size = strlen(ae->api) + 1;
-                strcpy(data.data, ae->api);
+                data.size = strlen(ae_object->api) + 1;
+                strcpy(data.data, ae_object->api);
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
         if (strncmp(key.data, "aei", key.size) == 0 && aei_f==0) {
             cnt_aei++;
             if (cnt_aei == idx) {
-                data.size = strlen(ae->aei) + 1;
-                strcpy(data.data, ae->aei);
+                data.size = strlen(ae_object->aei) + 1;
+                strcpy(data.data, ae_object->aei);
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
         if (strncmp(key.data, "et", key.size) == 0 && et_f==0) {
             cnt_et++;
             if (cnt_et == idx) {
-                data.size = strlen(ae->et) + 1;
-                strcpy(data.data, ae->et);
+                data.size = strlen(ae_object->et) + 1;
+                strcpy(data.data, ae_object->et);
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
         if (strncmp(key.data, "lt", key.size) == 0 && lt_f==0) {
             cnt_lt++;
             if (cnt_lt == idx) {
-                data.size = strlen(ae->lt) + 1;
-                strcpy(data.data, ae->lt);
+                data.size = strlen(ae_object->lt) + 1;
+                strcpy(data.data, ae_object->lt);
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
         if (strncmp(key.data, "ct", key.size) == 0 && ct_f==0) {
             cnt_ct++;
             if (cnt_ct == idx) {
-                data.size = strlen(ae->ct) + 1;
-                strcpy(data.data, ae->ct);
+                data.size = strlen(ae_object->ct) + 1;
+                strcpy(data.data, ae_object->ct);
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
         if (strncmp(key.data, "ty", key.size) == 0 && ty_f==0) {
             cnt_ty++;
             if (cnt_ty == idx) {
-                *(int*)data.data = ae->ty;
+                *(int*)data.data = ae_object->ty;
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }
         if (strncmp(key.data, "rr", key.size) == 0 && rr_f==0) {
             cnt_rr++;
             if (cnt_rr == idx) {
-                *(bool*)data.data = ae->rr;
+                *(bool*)data.data = ae_object->rr;
                 dbcp->put(dbcp, &key, &data, DB_CURRENT);
             }
         }

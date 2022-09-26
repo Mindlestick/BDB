@@ -157,9 +157,9 @@ CNT* Get_CNT(char* ri);
 CIN* Get_CIN(char* ri);
 Sub* Get_Sub(char* ri);
 
-int DB_Update_AE(AE* ae);
+int DB_Update_AE(AE* ae_object);
 int DB_Update_CNT(CNT* cnt_object);
-int Update_Sub(Sub *sub);
+int Update_Sub(Sub *sub_object);
 
 int Delete_CSE(char* ri);
 int Delete_AE(char* ri);
