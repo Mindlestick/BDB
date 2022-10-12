@@ -41,16 +41,18 @@ typedef struct {
 } AE;
 
 typedef struct {
-	char* et;
-	char* ct;
-	char* lt;
-	char* rn;
-	char* ri;
-	char* pi;
-	int ty;
-	int st;
-	int cni;
-	int cbs;
+   char *et;
+   char *ct;
+   char *lt;
+   char *rn;
+   char *ri;
+   char *pi;
+   char *lbl;
+   char *acpi;
+   int ty;
+   int st;
+   int cni;
+   int cbs;
 } CNT;
 
 typedef struct {
@@ -81,6 +83,20 @@ typedef struct {
 	int ty;
 	int nct;
 } Sub;
+
+typedef struct {
+   char *rn;
+   char *pi;
+   char *ri;
+   char *ct;
+   char *lt;
+   char *et;
+   char *pv_acor;
+   char *pv_acop;
+   char *pvs_acor;
+   char *pvs_acop;
+   int ty;
+} ACP;
 
 typedef struct Node {
 	struct Node* parent;
@@ -150,6 +166,7 @@ int Store_AE(AE* ae_object);
 int Store_CNT(CNT* cnt_object);
 int Store_CIN(CIN* cin_object);
 int Store_Sub(Sub* sub_object);
+int Store_ACP(ACP *acp_object);
 
 CSE* Get_CSE();
 AE* Get_AE(char* ri);
