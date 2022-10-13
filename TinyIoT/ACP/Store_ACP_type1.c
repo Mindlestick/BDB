@@ -9,11 +9,12 @@ int display(char* database);
 
 int main() {
     ACP acp;
+    ACP acp1;
 
     //input sample
     acp.rn = "acp1";
     acp.ri = "5-20191210093452845";
-    acp.pi = "NULL";
+    acp.pi = "pipipi";
     acp.ty = 5;
     acp.ct = "20191210T093452";
     acp.lt = "20191210T093452";
@@ -22,13 +23,27 @@ int main() {
     acp.pv_acop = "2";
     acp.pvs_acor = "SM";
     acp.pvs_acop = "63";
+       //input sample
+    acp1.rn = "acp1";
+    acp1.ri = "5-20191210093452846";
+    acp1.pi = "pipipi";
+    acp1.ty = 5;
+    acp1.ct = "20191210T093452";
+    acp1.lt = "20191210T093452";
+    acp1.et = "20211210T093452";
+    acp1.pv_acor = "CAE1";
+    acp1.pv_acop = "2";
+    acp1.pvs_acor = "SM";
+    acp1.pvs_acop = "63";
 
 
     // [success -> 1] 
     if(Store_ACP(&acp)) fprintf(stderr, "store success!\n");
+    if(Store_ACP(&acp1)) fprintf(stderr, "store success!\n");
+
 
     // print
-    char* DATABASE = "ACP_type.db";
+    char* DATABASE = "ACP_type1.db";
     display(DATABASE);
 
     return 0;

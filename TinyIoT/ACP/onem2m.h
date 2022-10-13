@@ -173,16 +173,20 @@ AE* Get_AE(char* ri);
 CNT* Get_CNT(char* ri);
 CIN* Get_CIN(char* ri);
 Sub* Get_Sub(char* ri);
+ACP* Get_ACP(char* ri);
 
 int DB_Update_AE(AE* ae_object);
 int DB_Update_CNT(CNT* cnt_object);
 int Update_Sub(Sub *sub_object);
+int Update_ACP(ACP *acp_object);
+
 
 int Delete_CSE(char* ri);
 int Delete_AE(char* ri);
 int Delete_CNT(char* ri);
 int Delete_CIN(char* ri);
 int Delete_Sub(char *ri);
+int Delete_ACP(char *ri);
 
 Node* Get_All_CSE();
 Node* Get_All_AE();

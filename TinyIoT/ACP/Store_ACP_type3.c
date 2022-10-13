@@ -23,7 +23,6 @@ int main() {
     acp.pvs_acor = "SM";
     acp.pvs_acop = "63";
 
-
     // [success -> 1] 
     if(Store_ACP(&acp)) fprintf(stderr, "store success!\n");
 
