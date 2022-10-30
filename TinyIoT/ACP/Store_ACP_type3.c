@@ -12,9 +12,9 @@ int main() {
 
     //input sample
     acp.rn = "acp1";
-    acp.ri = "5-20191210093452845";
+    acp.ri = "1-20191210093452845";
     acp.pi = "pipipi";
-    acp.ty = 5;
+    acp.ty = 1;
     acp.ct = "20191210T093452";
     acp.lt = "20191210T093452";
     acp.et = "20211210T093452";

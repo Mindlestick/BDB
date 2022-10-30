@@ -6,7 +6,7 @@
 #include "onem2m.h"
 
 int main() {
-    ACP *acp = Get_ACP("5-20191210093452845");
+    ACP *acp = Get_ACP("1-20191210093452845");
     printf("%s\n",acp->rn);
 
     return 0;

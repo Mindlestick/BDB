@@ -8,7 +8,7 @@
 int display(char* database);
 
 int main() {
-    Delete_ACP("5-20191210093452846");
+    Delete_ACP("1-20191210093452846");
     display("ACP_type1.db");
 
     return 0;

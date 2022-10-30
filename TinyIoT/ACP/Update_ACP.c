@@ -9,7 +9,7 @@ int main() {
 
     ACP acp_update;
     acp_update.rn = "acp1_updateeee";
-    acp_update.ri = "5-20191210093452845";
+    acp_update.ri = "1-20191210093452845";
 
     if(Update_ACP(&acp_update))
         display("ACP_type1.db");
