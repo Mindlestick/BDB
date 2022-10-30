@@ -9,6 +9,7 @@
 
 int main() {
     ACP acp;
+    ACP acp1;
 
     //input sample
     acp.rn = "acp1";
@@ -23,9 +24,23 @@ int main() {
     acp.pvs_acor = "SM";
     acp.pvs_acop = "63";
 
+    //input sample
+    acp1.rn = "acp11";
+    acp1.ri = "1-20181210093452845";
+    acp1.pi = "pipipi";
+    acp1.ty = 1;
+    acp1.ct = "20191210T093452";
+    acp1.lt = "20191210T093452";
+    acp1.et = "20211210T093452";
+    acp1.pv_acor = "CAE1";
+    acp1.pv_acop = "2";
+    acp1.pvs_acor = "SM";
+    acp1.pvs_acop = "64";
+
 
     // [success -> 1] 
     if(Store_ACP(&acp)) fprintf(stderr, "store success!\n");
+    if(Store_ACP(&acp1)) fprintf(stderr, "store success!\n");
 
     // print
     char* DATABASE = "ACP_type2.db";
@@ -137,7 +152,7 @@ int Store_ACP(ACP *acp_object) {
     data_pv_acor.data = acp_object->pv_acor;
     data_pv_acor.size = strlen(acp_object->pv_acor) + 1;
 
-    data_pv_acop.data = acp_object->pvs_acop;
+    data_pv_acop.data = acp_object->pv_acop;
     data_pv_acop.size = strlen(acp_object->pv_acop) + 1;
 
     data_pvs_acor.data = acp_object->pvs_acor;
